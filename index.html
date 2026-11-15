@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MNJCC Photo Finder</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #ffffff; --text: #1b2130; --muted: #5f6878; --line: #dfe3ea;
+    --accent: #1f5ad1; --accent-soft: #e5edfc; --accent-text: #ffffff; --chip: #eef1f5;
+    --ok: #1d7a3d; --bad: #b3261e; --shadow: 0 1px 2px rgba(20,30,50,.06), 0 4px 14px rgba(20,30,50,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --card: #1b2029; --text: #e8ebf1; --muted: #9aa3b3; --line: #2c333f;
+      --accent: #7aa2ff; --accent-soft: #24304a; --accent-text: #0c1222; --chip: #262c37;
+      --ok: #5cc47f; --bad: #ff7a70; --shadow: 0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  button, input, select { font: inherit; color: inherit; }
+  a { color: var(--accent); }
+  .hidden { display: none !important; }
+
+  /* lock screen */
+  #lock { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+  .lockbox { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px;
+    width: 100%; max-width: 380px; box-shadow: var(--shadow); }
+  .lockbox h1 { margin: 0 0 4px; font-size: 22px; }
+  .lockbox p { margin: 0 0 18px; color: var(--muted); }
+  .lockbox input[type=password] { width: 100%; padding: 11px 12px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--bg); }
+  .lockbox label { display: flex; gap: 8px; align-items: center; margin: 12px 0 16px; color: var(--muted); font-size: 14px; }
+  .primary { background: var(--accent); color: var(--accent-text); border: 0; border-radius: 9px; padding: 10px 16px;
+    cursor: pointer; font-weight: 600; }
+  .primary:disabled { opacity: .6; cursor: wait; }
+  #lockMsg { margin-top: 12px; font-size: 14px; min-height: 20px; }
+  #lockMsg.bad { color: var(--bad); }
+
+  /* app */
+  header { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .bar { max-width: 1400px; margin: 0 auto; padding: 12px 16px 10px; }
+  .top { display: flex; gap: 12px; align-items: center; }
+  .brand { font-weight: 700; font-size: 17px; white-space: nowrap; }
+  .search { flex: 1; position: relative; }
+  .search input { width: 100%; padding: 11px 14px 11px 38px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--card); font-size: 16px; }
+  .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  .lockbtn { background: none; border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; cursor: pointer;
+    color: var(--muted); white-space: nowrap; }
+  .chips { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: thin; }
+  .chip { flex: none; border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 5px 12px;
+    cursor: pointer; font-size: 14px; white-space: nowrap; }
+  .chip .n { color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .chip.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .chip.on .n { color: inherit; opacity: .8; }
+  .subs { padding-top: 6px; }
+  .subs .chip { font-size: 13px; padding: 4px 10px; background: var(--chip); }
+  .subs .chip.on { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding-top: 8px; font-size: 14px; }
+  .filters select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
+  .filters label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; color: var(--muted); }
+  .filters .reset { margin-left: auto; background: none; border: 0; color: var(--accent); cursor: pointer; padding: 4px; }
+
+  main { max-width: 1400px; margin: 0 auto; padding: 14px 16px 60px; }
+  .summary { color: var(--muted); font-size: 14px; margin-bottom: 12px; display: flex; gap: 12px; flex-wrap: wrap;
+    align-items: center; }
+  .summary b { color: var(--text); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; cursor: pointer;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; text-align: left; padding: 0; }
+  .card:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .thumb { aspect-ratio: 4 / 3; background: var(--chip); display: grid; place-items: center; overflow: hidden; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .meta { padding: 8px 10px 10px; display: grid; gap: 3px; }
+  .cap { font-size: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 5px; background: var(--accent-soft);
+    color: var(--accent); margin-right: 4px; }
+  .more { display: block; margin: 20px auto 0; }
+  .empty { text-align: center; color: var(--muted); padding: 60px 16px; }
+  .tips { color: var(--muted); font-size: 13px; }
+  .tips button { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0 2px; font-size: 13px; }
+
+  /* detail */
+  #detail { position: fixed; inset: 0; z-index: 20; background: rgba(10,14,22,.6); display: grid; place-items: center;
+    padding: 16px; }
+  .dbox { background: var(--card); border-radius: 14px; width: 100%; max-width: 980px; max-height: calc(100vh - 32px);
+    overflow: auto; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+  .dimg { background: #0d1017; display: grid; place-items: center; min-height: 280px; position: relative; }
+  .dimg img { max-width: 100%; max-height: 72vh; display: block; }
+  .dnav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.5); color: #fff; border: 0;
+    width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 20px; }
+  .dnav.prev { left: 10px; } .dnav.next { right: 10px; }
+  .dinfo { padding: 18px 18px 20px; display: grid; gap: 12px; align-content: start; }
+  .dinfo h2 { margin: 0; font-size: 17px; line-height: 1.35; font-weight: 600; }
+  .close { justify-self: end; background: none; border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px;
+    cursor: pointer; }
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; margin: 0; }
+  .facts dt { color: var(--muted); } .facts dd { margin: 0; overflow-wrap: anywhere; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags button { border: 0; background: var(--chip); border-radius: 999px; padding: 3px 10px; cursor: pointer; font-size: 13px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .actions a, .actions button { text-decoration: none; }
+  .ghost { background: none; border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; cursor: pointer; }
+  .note { font-size: 12px; color: var(--muted); }
+  .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg);
+    padding: 8px 14px; border-radius: 8px; font-size: 14px; z-index: 30; }
+
+  .mobile-only { display: none; }
+  @media (max-width: 760px) {
+    .brand { display: none; }
+    .mobile-only { display: inline-block; }
+    .filters { display: none; }
+    .filters.open { display: flex; }
+    .top { gap: 8px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    .dbox { grid-template-columns: 1fr; }
+    .dimg img { max-height: 50vh; }
+  }
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <form class="lockbox" id="lockForm">
+    <h1>MNJCC Photo Finder</h1>
+    <p>Search the Marketing photo library. Enter the team passcode to continue.</p>
+    <input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
+    <label><input type="checkbox" id="remember" checked> Remember on this device</label>
+    <button class="primary" id="unlock" type="submit">Open</button>
+    <div id="lockMsg"></div>
+  </form>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <div class="bar">
+      <div class="top">
+        <div class="brand">MNJCC Photo Finder</div>
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="search" placeholder="Try “kids swimming”, “Hanukkah”, “choir”, “seniors dancing”…" autocomplete="off">
+        </div>
+        <button class="lockbtn mobile-only" id="fBtn" aria-expanded="false">Filters</button>
+        <button class="lockbtn" id="lockBtn" title="Forget the passcode on this device">Lock</button>
+      </div>
+      <div class="chips" id="depts"></div>
+      <div class="chips subs hidden" id="subs"></div>
+      <div class="filters" id="filters">
+        <select id="fYear" aria-label="Year"></select>
+        <select id="fPeople" aria-label="People">
+          <option value="">Any number of people</option>
+          <option value="0">No people</option><option value="1">1 person</option>
+          <option value="2-5">2–5 people</option><option value="6-15">6–15 people</option><option value="16+">16+ people</option>
+        </select>
+        <select id="fAge" aria-label="Ages">
+          <option value="">Any ages</option><option value="babies">Babies</option><option value="kids">Kids</option>
+          <option value="teens">Teens</option><option value="adults">Adults</option><option value="seniors">Seniors</option>
+        </select>
+        <select id="fSetting" aria-label="Indoor or outdoor">
+          <option value="">Indoor & outdoor</option><option value="indoor">Indoor</option><option value="outdoor">Outdoor</option>
+        </select>
+        <select id="fShape" aria-label="Shape">
+          <option value="">Any shape</option><option value="landscape">Landscape</option>
+          <option value="portrait">Portrait</option><option value="square">Square</option>
+        </select>
+        <select id="fSort" aria-label="Sort">
+          <option value="best">Best match</option><option value="new">Newest first</option><option value="old">Oldest first</option>
+        </select>
+        <label><input type="checkbox" id="fFlyer"> Flyer-friendly only</label>
+        <label><input type="checkbox" id="fGood" checked> Hide blurry/dark</label>
+        <button class="reset" id="reset">Clear all</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="summary"><span id="count"></span><span class="tips" id="tips"></span></div>
+    <div class="grid" id="grid"></div>
+    <button class="ghost more hidden" id="more">Show more</button>
+    <div class="empty hidden" id="empty">No photos match. Try fewer words or clear a filter.</div>
+  </main>
+</div>
+
+<div id="detail" class="hidden" role="dialog" aria-modal="true" aria-labelledby="dCap">
+  <div class="dbox">
+    <div class="dimg">
+      <img id="dImg" alt="">
+      <button class="dnav prev" id="dPrev" aria-label="Previous">‹</button>
+      <button class="dnav next" id="dNext" aria-label="Next">›</button>
+    </div>
+    <div class="dinfo">
+      <button class="close" id="dClose">Close ✕</button>
+      <h2 id="dCap"></h2>
+      <dl class="facts" id="dFacts"></dl>
+      <div class="tags" id="dTags"></div>
+      <div class="actions">
+        <a class="primary" id="dOpen" target="_blank" rel="noopener">Open full photo in SharePoint</a>
+        <button class="ghost" id="dEvent">More from this event</button>
+        <button class="ghost" id="dCopy">Copy file name</button>
+      </div>
+      <div class="note" id="dNote"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} },
+                del: k => { try { localStorage.removeItem(k); } catch (e) {} } };
+const PASS_KEY = "mnjcc_photo_pass";
+let KEY = null, DATA = null, PHOTOS = [], RESULTS = [], shown = 0, current = -1;
+const PAGE = 60;
+
+// ---------- crypto ----------
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function deriveKey(pass, meta) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pass), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", hash: "SHA-256", salt: b64(meta.salt), iterations: meta.iterations },
+    base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+}
+async function openBlob(buf) {
+  const u = new Uint8Array(buf);
+  return crypto.subtle.decrypt({ name: "AES-GCM", iv: u.slice(0, 12) }, KEY, u.slice(12));
+}
+
+async function unlock(pass) {
+  const meta = await (await fetch("meta.json", { cache: "no-cache" })).json();
+  const key = await deriveKey(pass, meta);
+  KEY = key;
+  try { await openBlob(b64(meta.check).buffer); } catch (e) { KEY = null; throw new Error("wrong"); }
+  const enc = await (await fetch("data.bin", { cache: "no-cache" })).arrayBuffer();
+  const gz = await openBlob(enc);
+  const text = await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"))).text();
+  DATA = JSON.parse(text);
+  prepare();
+}
+
+$("lockForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const pass = $("pass").value.trim(); if (!pass) return;
+  $("unlock").disabled = true; $("lockMsg").className = ""; $("lockMsg").textContent = "Opening…";
+  try {
+    await unlock(pass);
+    if ($("remember").checked) store.set(PASS_KEY, pass);
+    showApp();
+  } catch (err) {
+    $("lockMsg").className = "bad";
+    $("lockMsg").textContent = err.message === "wrong" ? "That passcode didn't work." : "Couldn't load the library: " + err.message;
+  }
+  $("unlock").disabled = false;
+});
+$("lockBtn").addEventListener("click", () => { store.del(PASS_KEY); location.reload(); });
+
+// ---------- search index ----------
+const norm = s => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[’']/g, "");
+const SYN = [
+  ["hanukkah", "chanukah", "hanukah", "menorah", "dreidel", "latke", "sufganiyot"],
+  ["shabbat", "shabbos", "challah", "kiddush", "havdalah"],
+  ["purim", "hamantash", "megillah", "costume"],
+  ["passover", "pesach", "seder", "matzah", "matzo"],
+  ["sukkot", "sukkah", "lulav", "etrog"],
+  ["rosh hashanah", "shofar", "apples and honey"],
+  ["israel", "israeli", "yom haatzmaut"],
+  ["kids", "kid", "children", "child", "boy", "girl", "camper"],
+  ["teens", "teen", "teenager", "youth"],
+  ["seniors", "senior", "older adult", "elderly", "adult daytime"],
+  ["babies", "baby", "toddler", "infant"],
+  ["swim", "swimming", "pool", "aquatic", "lifeguard"],
+  ["gym", "fitness", "workout", "exercise", "training", "weights"],
+  ["yoga"], ["pilates", "reformer"],
+  ["choir", "chorus", "singing", "singer", "singers"],
+  ["music", "musician", "concert", "violin", "guitar", "piano", "cello", "ukulele", "drum", "instrument"],
+  ["dance", "dancing", "dancer"],
+  ["art", "painting", "drawing", "craft", "crafts", "exhibit"],
+  ["food", "cooking", "baking", "meal", "snack", "cookies"],
+  ["party", "celebration", "festive"],
+  ["volunteer", "volunteers", "donation", "jcares"],
+  ["camp", "summer camp", "jcamp"],
+  ["pride", "rainbow", "lgbtq"],
+  ["outdoor", "outside", "rooftop"],
+];
+const pad = s => " " + norm(s).replace(/[^a-z0-9&#]+/g, " ") + " ";   // words separated by single spaces
+const SYNMAP = new Map();
+for (const g of SYN) for (const w of g) SYNMAP.set(w, g);
+
+function prepare() {
+  const libs = DATA.libs;
+  PHOTOS = DATA.photos.map((r, idx) => {
+    const name = r.p.split("/").pop();
+    return Object.assign(r, {
+      idx, name, lib: libs[r.l],
+      sTags: pad(r.t.join(" ") + " " + (r.j || []).join(" ")),
+      sCap: pad(r.c + " " + r.a + " " + r.m),
+      sText: pad(r.x),
+      sPlace: pad(r.e + " " + r.d.join(" ") + " " + r.u.join(" ") + " " + r.p),
+      sAges: pad((r.g || []).join(" ") + " " + r.s),
+    });
+  });
+  // department chips + year list
+  const depts = new Map(), years = new Map();
+  for (const r of PHOTOS) { for (const d of r.d) depts.set(d, (depts.get(d) || 0) + 1); if (r.y) years.set(r.y, (years.get(r.y) || 0) + 1); }
+  const order = Object.keys(DATA.tree || {});
+  const rank = d => (order.indexOf(d) + 1 || 99);
+  const chips = $("depts"); chips.textContent = "";
+  const mk = (label, val, n) => { const b = document.createElement("button"); b.className = "chip"; b.dataset.d = val;
+    b.innerHTML = `${esc(label)}<span class="n">${n.toLocaleString()}</span>`; b.onclick = () => { setDept(val); }; chips.appendChild(b); };
+  mk("All departments", "", PHOTOS.length);
+  [...depts.entries()].sort((a, b) => rank(a[0]) - rank(b[0]) || a[0].localeCompare(b[0])).forEach(([d, n]) => mk(d, d, n));
+  const ys = $("fYear"); ys.innerHTML = `<option value="">All years</option>`;
+  [...years.keys()].sort().reverse().forEach(y => ys.insertAdjacentHTML("beforeend", `<option value="${y}">${y}</option>`));
+}
+
+function score(r, terms) {
+  let total = 0;
+  for (const alts of terms) {
+    let best = 0;
+    for (const a0 of alts) {
+      const a = " " + a0;                 // match at the start of a word ("art" won't match "party")
+      let s = 0;
+      if (r.sTags.includes(a)) s += 4;
+      if (r.sPlace.includes(a)) s += 3;
+      if (r.sText.includes(a)) s += 3;
+      if (r.sCap.includes(a)) s += 2;
+      if (r.sAges.includes(a)) s += 1;
+      if (s > best) best = s;
+    }
+    if (!best) return 0;              // every word must match something
+    total += best;
+  }
+  return total;
+}
+
+function parseQuery(q) {
+  q = norm(q).trim();
+  if (!q) return [];
+  const terms = [];
+  // multi-word synonyms first (e.g. "summer camp")
+  for (const [w, g] of SYNMAP) if (w.includes(" ") && q.includes(w)) { terms.push(g); q = q.replace(w, " "); }
+  for (let w of q.split(/[^a-z0-9&#]+/).filter(Boolean)) {
+    if (w.length < 2 || ["the", "and", "of", "at", "in", "a", "with", "for", "on", "photos", "photo", "pictures"].includes(w)) continue;
+    const base = w.length > 4 && w.endsWith("s") ? w.slice(0, -1) : w;
+    terms.push(SYNMAP.get(w) || SYNMAP.get(base) || [base]);
+  }
+  return terms;
+}
+
+// ---------- filters / state ----------
+const state = { q: "", d: "", u: "", y: "", n: "", g: "", s: "", o: "", sort: "best", flyer: false, good: true, event: "" };
+function readControls() {
+  Object.assign(state, { q: $("q").value, y: $("fYear").value, n: $("fPeople").value, g: $("fAge").value,
+    s: $("fSetting").value, o: $("fShape").value, sort: $("fSort").value, flyer: $("fFlyer").checked, good: $("fGood").checked });
+}
+function setDept(d) { state.d = d; state.u = ""; state.event = ""; renderSubs(); run(); }
+function renderSubs() {
+  const box = $("subs"); box.textContent = "";
+  if (!state.d) { box.classList.add("hidden"); return; }
+  const counts = new Map();
+  for (const r of PHOTOS) for (const u of r.u) if (u.startsWith(state.d + " > ")) counts.set(u, (counts.get(u) || 0) + 1);
+  const subs = ((DATA.tree || {})[state.d] || []).map(s => state.d + " > " + s).filter(u => counts.get(u));
+  for (const u of counts.keys()) if (!subs.includes(u)) subs.push(u);
+  if (!subs.length) { box.classList.add("hidden"); return; }
+  const mk = (label, val, n) => { const b = document.createElement("button"); b.className = "chip"; b.dataset.u = val;
+    b.innerHTML = esc(label) + (n != null ? `<span class="n">${n.toLocaleString()}</span>` : ""); b.onclick = () => { state.u = val; state.event = ""; run(); }; box.appendChild(b); };
+  mk("All of " + state.d, "", null);
+  subs.forEach(u => mk(u.split(" > ")[1], u, counts.get(u)));
+  box.classList.remove("hidden");
+}
+
+function run() {
+  readControls();
+  const terms = parseQuery(state.q);
+  const out = [];
+  for (const r of PHOTOS) {
+    if (state.d && !r.d.includes(state.d)) continue;
+    if (state.u && !r.u.includes(state.u)) continue;
+    if (state.event && r.e !== state.event) continue;
+    if (state.y && r.y !== state.y) continue;
+    if (state.n && r.n !== state.n) continue;
+    if (state.g && !(r.g || []).includes(state.g)) continue;
+    if (state.s && r.s !== state.s) continue;
+    if (state.o && r.o !== state.o) continue;
+    if (state.flyer && !r.f) continue;
+    if (state.good && r.q === "poor") continue;
+    let sc = 1;
+    if (terms.length) { sc = score(r, terms); if (!sc) continue; }
+    out.push([sc + (r.f ? 0.5 : 0) + (r.q === "good" ? 0.3 : 0), r]);
+  }
+  const byDate = (a, b) => (b[1].k || b[1].y).localeCompare(a[1].k || a[1].y);
+  if (state.sort === "new" || (state.sort === "best" && !terms.length)) out.sort(byDate);
+  else if (state.sort === "old") out.sort((a, b) => -byDate(a, b));
+  else out.sort((a, b) => b[0] - a[0] || byDate(a, b));
+  RESULTS = out.map(x => x[1]);
+  document.querySelectorAll("#depts .chip").forEach(c => c.classList.toggle("on", c.dataset.d === state.d));
+  document.querySelectorAll("#subs .chip").forEach(c => c.classList.toggle("on", c.dataset.u === state.u));
+  $("count").innerHTML = `<b>${RESULTS.length.toLocaleString()}</b> photo${RESULTS.length === 1 ? "" : "s"}` +
+    (state.event ? ` from <b>${esc(state.event)}</b> <button class="ghost" style="padding:2px 8px" id="clrEvent">✕</button>` : "");
+  if (state.event) $("clrEvent").onclick = () => { state.event = ""; run(); };
+  $("tips").innerHTML = !state.q && !state.event ? `Try: ${["kids swimming", "Hanukkah", "choir concert", "seniors", "yoga", "volunteers", "Purim"].map(t => `<button data-t="${t}">${t}</button>`).join(" · ")}` : "";
+  $("tips").querySelectorAll("button").forEach(b => b.onclick = () => { $("q").value = b.dataset.t; run(); });
+  $("grid").textContent = ""; shown = 0; renderMore();
+  $("empty").classList.toggle("hidden", RESULTS.length > 0);
+  saveUrl();
+}
+
+function renderMore() {
+  const frag = document.createDocumentFragment();
+  for (const r of RESULTS.slice(shown, shown + PAGE)) frag.appendChild(card(r));
+  shown = Math.min(RESULTS.length, shown + PAGE);
+  $("grid").appendChild(frag);
+  $("more").classList.toggle("hidden", shown >= RESULTS.length);
+  $("more").textContent = `Show more (${(RESULTS.length - shown).toLocaleString()} left)`;
+}
+$("more").onclick = renderMore;
+$("fBtn").onclick = () => { const o = $("filters").classList.toggle("open"); $("fBtn").setAttribute("aria-expanded", o); };
+new IntersectionObserver(es => { if (es[0].isIntersecting && shown < RESULTS.length) renderMore(); },
+  { rootMargin: "800px" }).observe($("more"));
+
+function card(r) {
+  const b = document.createElement("button"); b.className = "card"; b.type = "button";
+  b.innerHTML = `<div class="thumb"><img alt="" data-id="${r.i}"></div>
+    <div class="meta"><div class="cap">${esc(r.c)}</div>
+    <div class="sub">${r.f ? '<span class="badge">Flyer</span>' : ""}${esc(r.e || r.d[0])}${r.y ? " · " + r.y : ""}</div></div>`;
+  b.onclick = () => openDetail(RESULTS.indexOf(r));
+  thumbObserver.observe(b.querySelector("img"));
+  return b;
+}
+
+// ---------- previews (encrypted) ----------
+const cache = new Map(); let inflight = 0; const waiting = [];
+function loadThumb(id) {
+  if (cache.has(id)) return cache.get(id);
+  const p = new Promise((resolve, reject) => waiting.push({ id, resolve, reject }));
+  cache.set(id, p); pump(); return p;
+}
+function pump() {
+  while (inflight < 8 && waiting.length) {
+    const job = waiting.shift(); inflight++;
+    fetch(`t/${job.id}.bin`).then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then(openBlob).then(buf => job.resolve(URL.createObjectURL(new Blob([buf], { type: "image/jpeg" }))))
+      .catch(e => { cache.delete(job.id); job.reject(e); })
+      .finally(() => { inflight--; pump(); });
+  }
+}
+const thumbObserver = new IntersectionObserver(es => {
+  for (const e of es) if (e.isIntersecting) {
+    thumbObserver.unobserve(e.target);
+    loadThumb(e.target.dataset.id).then(u => { e.target.src = u; }).catch(() => {});
+  }
+}, { rootMargin: "400px" });
+
+// ---------- detail ----------
+function spLink(r) {
+  const encPath = s => s.split("/").map(encodeURIComponent).join("/");
+  if (r.lib.url) return r.lib.url.replace(/\/$/, "") + "/" + encPath(r.p);
+  return (DATA.site || "").replace(/\/$/, "") + "/_layouts/15/search.aspx/siteall?q=" + encodeURIComponent(`"${r.name}"`);
+}
+function openDetail(i) {
+  if (i < 0 || i >= RESULTS.length) return;
+  current = i; const r = RESULTS[i];
+  $("dImg").removeAttribute("src"); $("dImg").alt = r.c;
+  loadThumb(r.i).then(u => { if (RESULTS[current] === r) $("dImg").src = u; }).catch(() => {});
+  $("dCap").textContent = r.c;
+  const facts = [["Departments", r.d.join(", ")], ["Programs", r.u.map(u => u.split(" > ")[1]).filter((v, i, a) => a.indexOf(v) === i).join(", ")], ["Event", r.e], ["Date", r.k || r.y], ["People", r.n ? r.n + ((r.g || []).length ? " · " + r.g.join(", ") : "") : ""],
+    ["Setting", [r.s, r.o].filter(Boolean).join(" · ")], ["Mood", r.m], ["Text in photo", r.x],
+    ["Good for flyers", r.f ? "Yes" : "No"], ["File", r.name], ["Folder", r.p.split("/").slice(0, -1).join(" / ")]];
+  $("dFacts").innerHTML = facts.filter(f => f[1]).map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
+  $("dTags").innerHTML = [...(r.j || []), ...r.t].map(t => `<button>${esc(t)}</button>`).join("");
+  $("dTags").querySelectorAll("button").forEach(b => b.onclick = () => { closeDetail(); $("q").value = b.textContent; run(); });
+  $("dOpen").href = spLink(r);
+  $("dNote").textContent = r.lib.url ? "Opens the original, full-size photo (sign in to SharePoint if asked)."
+    : "Opens a SharePoint search for this file name — the original will be the top result (sign in if asked).";
+  $("dEvent").onclick = () => { closeDetail(); state.event = r.e; state.d = ""; state.u = ""; renderSubs(); $("q").value = ""; run(); };
+  $("dCopy").onclick = () => copy(r.name);
+  $("dPrev").classList.toggle("hidden", i === 0); $("dNext").classList.toggle("hidden", i === RESULTS.length - 1);
+  $("detail").classList.remove("hidden");
+}
+function closeDetail() { $("detail").classList.add("hidden"); current = -1; }
+$("dClose").onclick = closeDetail;
+$("detail").addEventListener("click", e => { if (e.target.id === "detail") closeDetail(); });
+$("dPrev").onclick = () => openDetail(current - 1);
+$("dNext").onclick = () => openDetail(current + 1);
+document.addEventListener("keydown", e => {
+  if (current < 0) return;
+  if (e.key === "Escape") closeDetail();
+  else if (e.key === "ArrowLeft") openDetail(current - 1);
+  else if (e.key === "ArrowRight") openDetail(current + 1);
+});
+
+function copy(text) {
+  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).catch(() => {}).finally(() => toast("Copied: " + text));
+}
+function toast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 1800);
+}
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+// ---------- wiring ----------
+let timer;
+$("q").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 180); });
+for (const id of ["fYear", "fPeople", "fAge", "fSetting", "fShape", "fSort", "fFlyer", "fGood"]) $(id).addEventListener("change", run);
+$("reset").onclick = () => {
+  $("q").value = ""; for (const id of ["fYear", "fPeople", "fAge", "fSetting", "fShape"]) $(id).value = "";
+  $("fSort").value = "best"; $("fFlyer").checked = false; $("fGood").checked = true; state.d = ""; state.u = ""; state.event = ""; renderSubs(); run();
+};
+function saveUrl() {
+  const p = new URLSearchParams();
+  if (state.q) p.set("q", state.q); if (state.d) p.set("dept", state.d); if (state.u) p.set("program", state.u); if (state.y) p.set("year", state.y);
+  history.replaceState(null, "", p.toString() ? "#" + p : location.pathname);
+}
+function loadUrl() {
+  const p = new URLSearchParams(location.hash.slice(1));
+  $("q").value = p.get("q") || ""; state.d = p.get("dept") || ""; state.u = p.get("program") || ""; if (p.get("year")) $("fYear").value = p.get("year");
+  renderSubs();
+}
+function showApp() { $("lock").classList.add("hidden"); $("app").classList.remove("hidden"); loadUrl(); run(); $("q").focus(); }
+
+(async () => {
+  const saved = store.get(PASS_KEY);
+  if (!saved) return;
+  $("lockMsg").textContent = "Opening…";
+  try { await unlock(saved); showApp(); }
+  catch (e) { store.del(PASS_KEY); $("lockMsg").textContent = ""; }
+})();
+</script>
+</body>
+</html>
