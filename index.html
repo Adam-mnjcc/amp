@@ -456,8 +456,16 @@ const thumbObserver = new IntersectionObserver(es => {
 
 // ---------- detail ----------
 function spLink(r) {
-  const encPath = s => s.split("/").map(encodeURIComponent).join("/");
-  if (r.lib.url) return r.lib.url.replace(/\/$/, "") + "/" + encPath(r.p);
+  if (r.lib.url) {
+    // Open the photo in SharePoint's own viewer (the SharePoint phone app picks these links up).
+    // lib.url is the folder's web address, e.g. https://x.sharepoint.com/sites/Site/Shared%20Documents/007%20-%20Photos
+    const u = new URL(r.lib.url.replace(/\/$/, ""));
+    const base = decodeURIComponent(u.pathname);                       // /sites/Site/Shared Documents/007 - Photos
+    const file = base + "/" + r.p;
+    const folder = file.slice(0, file.lastIndexOf("/"));
+    const libRoot = u.pathname.split("/").slice(0, 4).join("/");       // /sites/Site/Shared%20Documents
+    return u.origin + libRoot + "/Forms/AllItems.aspx?id=" + encodeURIComponent(file) + "&parent=" + encodeURIComponent(folder);
+  }
   return (DATA.site || "").replace(/\/$/, "") + "/_layouts/15/search.aspx/siteall?q=" + encodeURIComponent(`"${r.name}"`);
 }
 function openDetail(i) {
@@ -473,7 +481,7 @@ function openDetail(i) {
   $("dTags").innerHTML = [...(r.j || []), ...r.t].map(t => `<button>${esc(t)}</button>`).join("");
   $("dTags").querySelectorAll("button").forEach(b => b.onclick = () => { closeDetail(); $("q").value = b.textContent; run(); });
   $("dOpen").href = spLink(r);
-  $("dNote").textContent = r.lib.url ? "Opens the original, full-size photo (sign in to SharePoint if asked)."
+  $("dNote").textContent = r.lib.url ? "Opens the original, full-size photo in SharePoint (sign in if asked)."
     : "Opens a SharePoint search for this file name — the original will be the top result (sign in if asked).";
   $("dEvent").onclick = () => { closeDetail(); state.event = r.e; state.d = ""; state.u = ""; renderSubs(); $("q").value = ""; run(); };
   $("dCopy").onclick = () => copy(r.name);
