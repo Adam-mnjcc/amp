@@ -188,6 +188,10 @@
         <select id="fYear" aria-label="Year"></select>
         <select id="fProg" aria-label="Program"></select>
         <select id="fEv" aria-label="Event" class="hidden"></select>
+        <select id="fPortrait" aria-label="Staff portraits">
+          <option value="">All photos</option><option value="only">Staff &amp; instructor portraits</option>
+          <option value="hide">Hide staff &amp; instructor portraits</option>
+        </select>
         <select id="fPeople" aria-label="People">
           <option value="">Any number of people</option>
           <option value="0">No people</option><option value="1">1 person</option>
@@ -512,11 +516,11 @@ function parseQuery(q) {
 }
 
 // ---------- filters / state ----------
-const state = { q: "", d: "", u: "", y: "", n: "", g: "", s: "", o: "", sort: "best", minStars: 0, size: "", good: true, hideDnu: false, event: "", pg: "", ev: "" };
+const state = { q: "", d: "", u: "", y: "", n: "", g: "", s: "", o: "", sort: "best", minStars: 0, size: "", good: true, hideDnu: false, event: "", pg: "", ev: "", sp: "" };
 function readControls() {
   Object.assign(state, { q: $("q").value, y: $("fYear").value, n: $("fPeople").value, g: $("fAge").value,
     s: $("fSetting").value, o: $("fShape").value, sort: $("fSort").value, minStars: +$("fStars").value || 0,
-    size: $("fSize").value, good: $("fGood").checked, hideDnu: $("fDnu").checked, pg: $("fProg").value, ev: $("fEv").value });
+    size: $("fSize").value, good: $("fGood").checked, hideDnu: $("fDnu").checked, pg: $("fProg").value, ev: $("fEv").value, sp: $("fPortrait").value });
 }
 function setDept(d) { state.d = d; state.u = ""; state.event = ""; renderSubs(); renderProgs(); run(); }
 function renderSubs() {
@@ -544,6 +548,8 @@ function run() {
     if (state.event && (r.v || r.e) !== state.event) continue;
     if (state.pg && !(r.pg || []).includes(state.pg)) continue;
     if (state.ev && r.v !== state.ev) continue;
+    if (state.sp === "only" && !r.sp) continue;
+    if (state.sp === "hide" && r.sp) continue;
     if (state.y && r.y !== state.y) continue;
     if (state.n && r.n !== state.n) continue;
     if (state.g && !(r.g || []).includes(state.g)) continue;
@@ -745,22 +751,22 @@ function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;
 // ---------- wiring ----------
 let timer;
 $("q").addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 180); });
-for (const id of ["fYear", "fPeople", "fAge", "fSetting", "fShape", "fStars", "fSize", "fSort", "fGood", "fDnu", "fEv"]) $(id).addEventListener("change", run);
+for (const id of ["fYear", "fPeople", "fAge", "fSetting", "fShape", "fStars", "fSize", "fSort", "fGood", "fDnu", "fEv", "fPortrait"]) $(id).addEventListener("change", run);
 $("fProg").addEventListener("change", () => { state.pg = $("fProg").value; state.ev = ""; renderEvents(); run(); });
 $("reset").onclick = () => {
-  $("q").value = ""; for (const id of ["fYear", "fPeople", "fAge", "fSetting", "fShape", "fStars", "fSize"]) $(id).value = "";
+  $("q").value = ""; for (const id of ["fYear", "fPeople", "fAge", "fSetting", "fShape", "fStars", "fSize", "fPortrait"]) $(id).value = "";
   $("fSort").value = "best"; $("fGood").checked = true; $("fDnu").checked = false; state.d = ""; state.u = ""; state.event = ""; state.pg = ""; state.ev = ""; renderSubs(); renderProgs(); run();
 };
 function saveUrl() {
   const p = new URLSearchParams();
   if (state.q) p.set("q", state.q); if (state.d) p.set("dept", state.d); if (state.u) p.set("program", state.u); if (state.y) p.set("year", state.y);
-  if (state.pg) p.set("pg", state.pg); if (state.ev) p.set("ev", state.ev);
+  if (state.pg) p.set("pg", state.pg); if (state.ev) p.set("ev", state.ev); if (state.sp) p.set("portraits", state.sp);
   history.replaceState(null, "", p.toString() ? "#" + p : location.pathname);
 }
 function loadUrl() {
   const p = new URLSearchParams(location.hash.slice(1));
   $("q").value = p.get("q") || ""; state.d = p.get("dept") || ""; state.u = p.get("program") || ""; if (p.get("year")) $("fYear").value = p.get("year");
-  state.pg = p.get("pg") || ""; state.ev = p.get("ev") || "";
+  state.pg = p.get("pg") || ""; state.ev = p.get("ev") || ""; $("fPortrait").value = p.get("portraits") || "";
   renderSubs(); renderProgs();
 }
 function showApp() {
