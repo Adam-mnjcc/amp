@@ -1,9 +1,5 @@
-# MNjcc Photo Finder
+# AIM
 
-Search the MNjcc Marketing photo library. Open the site and enter the team passcode.
+MNjcc marketing team web app: https://adam-mnjcc.github.io/aim/ (team passcode required).
 
-Everything here except `index.html` is encrypted with that passcode; the original
-photos stay in SharePoint. The site is built by `tools/build_site.py` in the
-private `mnjcc_image_searcher` repo.
-
-Live site: https://businesstwink.github.io/mnjcc_photo_search_site/
+Everything here except the pages themselves is encrypted with the team passcode. Built from a private repo.
