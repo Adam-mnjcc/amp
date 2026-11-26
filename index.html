@@ -5,153 +5,291 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>AMP · MNjcc Marketing</title>
+<link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Colours, type and shapes follow mnjcc.org: Rubik, Community Teal, 4px corners, the rainbow strip under the header. */
   :root {
-    --bg: #f5f6f8; --card: #ffffff; --text: #1b2130; --muted: #5f6878; --line: #dfe3ea;
-    --accent: #1f5ad1; --accent-soft: #e5edfc; --accent-text: #ffffff; --chip: #eef1f5;
+    --bg: #f6f8f9; --card: #ffffff; --text: #282828; --muted: #5d6670; --line: #dfe5e8;
+    --teal: #01a3b2; --accent: #017580; --accent-hover: #00626b; --accent-soft: #d1eef1; --accent-text: #ffffff; --chip: #eef2f4;
     --ok: #1d7a3d; --ok-soft: #e4f4e9; --bad: #b3261e; --bad-soft: #fdecea; --warn: #8a5a00; --warn-soft: #fff4dc;
-    --shadow: 0 1px 2px rgba(20,30,50,.06), 0 4px 14px rgba(20,30,50,.06);
+    --shadow: 0 1px 2px rgba(20,40,50,.05), 0 6px 20px rgba(20,40,50,.06);
+    --purple: #9c3795; --blue: #2f6fd0; --orange: #d9730d; --green: #3a8f4a;
+    --rainbow: linear-gradient(90deg, #01a3b2, #3a8f4a, #e2b100, #e8792b, #d6453d, #9c3795, #4b7bb9);
+    --r: 4px; --r-lg: 10px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #12151b; --card: #1b2029; --text: #e8ebf1; --muted: #9aa3b3; --line: #2c333f;
-      --accent: #7aa2ff; --accent-soft: #24304a; --accent-text: #0c1222; --chip: #262c37;
+      --bg: #10161a; --card: #182126; --text: #e9eef0; --muted: #9aa8b0; --line: #2a363d;
+      --teal: #2bc4d2; --accent: #2bc4d2; --accent-hover: #55d3de; --accent-soft: #143a40; --accent-text: #06242a; --chip: #212c32;
       --ok: #5cc47f; --ok-soft: #1a3324; --bad: #ff7a70; --bad-soft: #3b1f1f; --warn: #f2c14e; --warn-soft: #362c14;
       --shadow: 0 1px 2px rgba(0,0,0,.3);
+      --purple: #c98ac4; --blue: #7aa2ff; --orange: #f0a35a; --green: #6cc57d;
     }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--text);
-    font: 15px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif; }
-  button, input, select { font: inherit; color: inherit; }
+    font: 16px/1.5 Rubik, "Segoe UI", system-ui, -apple-system, sans-serif; }
+  button, input, select, textarea { font: inherit; color: inherit; }
   a { color: var(--accent); }
+  h1, h2, h3 { font-weight: 500; line-height: 1.2; margin: 0; }
   .hidden { display: none !important; }
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
-  #lock { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
-  .lockbox { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px;
-    width: 100%; max-width: 380px; box-shadow: var(--shadow); }
-  .lockbox h1 { margin: 0 0 4px; font-size: 22px; }
-  .lockbox p { margin: 0 0 18px; color: var(--muted); }
-  .lockbox input[type=password] { width: 100%; padding: 11px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); }
-  .lockbox label { display: flex; gap: 8px; align-items: center; margin: 12px 0 4px; color: var(--muted); font-size: 14px; }
+  /* buttons, like the site's: solid teal or outlined, 4px corners */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: var(--r); padding: 10px 16px;
+    font-weight: 500; cursor: pointer; border: 1px solid var(--text); background: transparent; text-decoration: none; color: var(--text);
+    white-space: nowrap; transition: background .15s, border-color .15s, color .15s; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-text); }
+  .btn.small { padding: 5px 11px; font-size: 14px; border-color: var(--line); background: var(--card); }
+  .btn.small:hover, .btn.small.on { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .btn.wide { width: 100%; margin-top: 14px; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .eyebrow { display: flex; align-items: center; gap: 12px; color: var(--accent); font-size: 13px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; }
+  .eyebrow::before, .eyebrow.both::after { content: ""; width: 28px; height: 1px; background: currentColor; opacity: .6; }
+
+  /* passcode screen */
+  #lock { min-height: 100vh; display: grid; place-items: center; padding: 16px;
+    background: radial-gradient(900px 500px at 15% 10%, var(--accent-soft), transparent 60%), var(--bg); }
+  .lockbox { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); width: 100%; max-width: 400px;
+    box-shadow: var(--shadow); overflow: hidden; }
+  .lockbox .strip { height: 5px; background: var(--rainbow); }
+  .lockbox .in { padding: 28px 26px 26px; }
+  .lockbox .mark { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .lockbox .mark img { width: 44px; height: 44px; border-radius: 8px; }
+  .lockbox h1 { font-size: 30px; font-weight: 600; letter-spacing: .5px; }
+  .lockbox .sub { color: var(--muted); font-size: 14px; }
+  .lockbox p { margin: 0 0 16px; color: var(--muted); }
+  .lockbox input[type=password] { width: 100%; padding: 12px 13px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); }
+  .lockbox label { display: flex; gap: 8px; align-items: center; margin: 12px 0 2px; color: var(--muted); font-size: 14px; }
   #lockMsg { margin-top: 12px; font-size: 14px; min-height: 20px; color: var(--muted); }
   #lockMsg.bad { color: var(--bad); }
-  .lockbtn { margin-left: auto; margin-bottom: 7px; background: none; border: 1px solid var(--line); border-radius: 9px; padding: 6px 12px;
-    cursor: pointer; color: var(--muted); white-space: nowrap; }
-  #tab-photos { margin: -16px -16px -60px; }
-  #photoFrame { display: block; width: 100%; height: calc(100vh - 52px); height: calc(100dvh - 52px); border: 0; }
-  main.wide { max-width: none; }
-  .how { color: var(--muted); font-size: 14px; margin: 0 0 12px; max-width: 760px; }
-  .how b { color: var(--text); }
-  header { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
-  .bar { max-width: 1400px; margin: 0 auto; padding: 10px 16px 0; display: flex; gap: 20px; align-items: flex-end; }
-  .brand { font-weight: 800; font-size: 20px; letter-spacing: .5px; padding-bottom: 9px; white-space: nowrap; }
-  .brand small { font-weight: 500; font-size: 12px; color: var(--muted); letter-spacing: 0; margin-left: 6px; }
-  nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
-  nav button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 9px 12px; cursor: pointer;
-    color: var(--muted); white-space: nowrap; font-weight: 600; }
-  nav button.on { color: var(--accent); border-bottom-color: var(--accent); }
-  @media (max-width: 560px) { .brand small { display: none; } .bar { gap: 8px; } nav button { padding: 9px 8px; } }
-  main { max-width: 1400px; margin: 0 auto; padding: 16px 16px 60px; }
-  .soon { background: var(--card); border: 1px dashed var(--line); border-radius: 12px; padding: 28px 22px; color: var(--muted);
-    max-width: 620px; }
-  .soon h2 { margin: 0 0 6px; color: var(--text); font-size: 18px; }
 
-  /* deep link finder */
-  .dl { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 18px; align-items: start; }
-  @media (max-width: 960px) { .dl { grid-template-columns: 1fr; } }
-  .find input[type=search] { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line);
-    background: var(--card); font-size: 16px; }
-  .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 0 4px; }
-  .chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 4px 11px; cursor: pointer;
-    font-size: 13px; white-space: nowrap; }
-  .chip.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
-  .meta { color: var(--muted); font-size: 13px; margin: 8px 0 10px; }
-  .course { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; box-shadow: var(--shadow); }
-  .course > .row { padding: 10px 12px; }
-  .row { display: flex; gap: 10px; align-items: center; }
-  .row .t { flex: 1; min-width: 0; }
-  .row .t b { display: block; overflow-wrap: anywhere; }
-  .row .t span { color: var(--muted); font-size: 13px; }
-  .sess { border-top: 1px solid var(--line); padding: 8px 12px; }
-  .opts { margin: 6px 0 2px 14px; border-left: 2px solid var(--line); padding-left: 10px; }
-  .opts .row { padding: 3px 0; font-size: 14px; }
-  .pick { flex: none; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 5px 10px; cursor: pointer;
-    font-size: 13px; white-space: nowrap; }
-  .pick:hover, .pick.on { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-  .more { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 2px 0; font-size: 13px; }
-  .badge { font-size: 12px; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
-  .badge.ok { background: var(--ok-soft); color: var(--ok); }
-  .badge.wait { background: var(--warn-soft); color: var(--warn); }
-  .badge.off { background: var(--chip); color: var(--muted); }
+  /* header */
+  header { position: sticky; top: 0; z-index: 5; background: var(--card); }
+  header::after { content: ""; display: block; height: 4px; background: var(--rainbow); }
+  .bar { max-width: 1400px; margin: 0 auto; padding: 0 16px; display: flex; gap: 18px; align-items: center; min-height: 56px; }
+  .brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; cursor: pointer; }
+  .brand img { width: 30px; height: 30px; border-radius: 6px; }
+  .brand b { font-size: 21px; font-weight: 600; letter-spacing: .5px; }
+  .brand small { font-size: 12px; color: var(--muted); line-height: 1.15; text-align: left; }
+  nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; align-self: stretch; flex: 1; }
+  nav::-webkit-scrollbar { display: none; }
+  nav button { background: none; border: 0; border-bottom: 3px solid transparent; border-top: 3px solid transparent; padding: 0 12px;
+    cursor: pointer; color: var(--text); white-space: nowrap; font-weight: 500; font-size: 15px; }
+  nav button:hover { color: var(--accent); }
+  nav button.on { color: var(--accent); border-bottom-color: var(--teal); }
+  .tools { display: flex; gap: 8px; }
+  @media (max-width: 1180px) { .brand small { display: none; } .bar { gap: 10px; flex-wrap: wrap; padding-top: 8px; }
+    nav { order: 3; flex-basis: 100%; min-height: 42px; margin: 0 -16px; padding: 0 8px; } .tools { margin-left: auto; } }
 
-  .panel { position: sticky; top: 68px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
-    box-shadow: var(--shadow); }
-  @media (max-width: 960px) { .panel { position: static; order: -1; } }
-  .panel h2 { margin: 0 0 2px; font-size: 17px; overflow-wrap: anywhere; }
-  .panel .lvl { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
-  .panel h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin: 16px 0 6px; }
-  .url { display: flex; gap: 6px; }
-  .url input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
-    font-size: 13px; }
-  .note { border-radius: 8px; padding: 8px 10px; font-size: 13px; margin-top: 8px; }
+  main { max-width: 1400px; margin: 0 auto; padding: 22px 16px 70px; }
+  main.wide { max-width: none; padding: 0; }
+  #photoFrame { display: block; width: 100%; height: calc(100vh - 60px); height: calc(100dvh - 60px); border: 0; }
+  @media (max-width: 1180px) { #photoFrame { height: calc(100dvh - 106px); } }
+  .pagehead { margin-bottom: 18px; }
+  .pagehead h2 { font-size: 28px; margin: 8px 0 6px; }
+  .pagehead p { margin: 0; color: var(--muted); max-width: 720px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); }
+  .note { border-radius: var(--r); padding: 9px 12px; font-size: 14px; margin-top: 10px; }
   .note.wait { background: var(--warn-soft); color: var(--warn); }
   .note.info { background: var(--chip); color: var(--muted); }
   .note.bad { background: var(--bad-soft); color: var(--bad); }
-  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
-  .cols label { display: flex; gap: 7px; align-items: center; cursor: pointer; }
-  .panel input[type=text] { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); }
-  .short { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
-  .short td { padding: 5px 0; border-top: 1px solid var(--line); vertical-align: middle; }
-  .short td:first-child { color: var(--muted); width: 82px; }
-  .short code { font: 13px ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
-  .primary { background: var(--accent); color: var(--accent-text); border: 0; border-radius: 9px; padding: 10px 16px;
-    cursor: pointer; font-weight: 600; width: 100%; margin-top: 12px; }
-  .primary:disabled { opacity: .5; cursor: not-allowed; }
+  .badge { font-size: 12px; font-weight: 500; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+  .badge.ok { background: var(--ok-soft); color: var(--ok); }
+  .badge.wait { background: var(--warn-soft); color: var(--warn); }
+  .badge.off { background: var(--chip); color: var(--muted); }
   .empty { color: var(--muted); }
+  .meta { color: var(--muted); font-size: 14px; margin: 8px 0 10px; }
+
+  /* home */
+  .hero { text-align: center; padding: 26px 0 30px; }
+  .hero .eyebrow { justify-content: center; }
+  .hero h1 { font-size: clamp(40px, 7vw, 68px); margin: 14px 0 0; }
+  .hero h1 span { color: var(--teal); }
+  .hero .tag { font-size: 20px; margin: 6px 0 12px; }
+  .hero p { color: var(--muted); max-width: 640px; margin: 0 auto; }
+  .apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .app { display: flex; flex-direction: column; gap: 8px; padding: 20px; text-align: left; cursor: pointer; border-top: 4px solid var(--c, var(--teal));
+    transition: transform .15s, box-shadow .15s; font: inherit; color: inherit; }
+  .app:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(20,40,50,.06), 0 12px 28px rgba(20,40,50,.1); }
+  .app .ico { width: 42px; height: 42px; border-radius: 10px; display: grid; place-items: center; color: var(--c, var(--teal));
+    background: color-mix(in srgb, var(--c, var(--teal)) 14%, transparent); }
+  .app h3 { font-size: 19px; }
+  .app p { margin: 0; color: var(--muted); font-size: 15px; flex: 1; }
+  .app .go { color: var(--c, var(--accent)); font-weight: 500; font-size: 15px; }
+
+  /* link tools (Deep Link Finder + Short Link Maker) */
+  .dl { display: grid; grid-template-columns: minmax(0, 1fr) 410px; gap: 18px; align-items: start; }
+  @media (max-width: 980px) { .dl { grid-template-columns: 1fr; } }
+  .field { width: 100%; padding: 11px 14px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 0 4px; }
+  .chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 14px; white-space: nowrap; }
+  .chip.on { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .course { margin-bottom: 10px; }
+  .course > .row { padding: 11px 14px; }
+  .row { display: flex; gap: 10px; align-items: center; }
+  .row .t { flex: 1; min-width: 0; }
+  .row .t b { display: block; font-weight: 500; overflow-wrap: anywhere; }
+  .row .t span { color: var(--muted); font-size: 14px; }
+  .sess { border-top: 1px solid var(--line); padding: 9px 14px; }
+  .opts { margin: 6px 0 2px 14px; border-left: 2px solid var(--accent-soft); padding-left: 10px; }
+  .opts .row { padding: 3px 0; font-size: 15px; }
+  .more { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 2px 0; font-size: 14px; }
+  .panel { position: sticky; top: 78px; padding: 18px; }
+  @media (max-width: 1180px) { .panel { top: 122px; } }
+  @media (max-width: 980px) { .panel { position: static; order: -1; } }
+  .panel h2 { font-size: 19px; overflow-wrap: anywhere; }
+  .panel .lvl { color: var(--muted); font-size: 14px; margin: 2px 0 12px; }
+  .panel h3, .lab { display: block; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 18px 0 6px; }
+  .url { display: flex; gap: 6px; }
+  .url input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); font-size: 14px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
+  .cols label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+  .panel input[type=text], .panel input[type=url] { width: 100%; padding: 9px 11px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); }
+  .short { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+  .short td { padding: 6px 0; border-top: 1px solid var(--line); vertical-align: middle; }
+  .short td:first-child { color: var(--muted); width: 88px; }
+  .short code { font: 13px ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+
+  /* posts + stories */
+  .daybar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .daybar select { padding: 9px 12px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); min-width: 220px; }
+  .doc { max-width: 900px; }
+  .doc > p, .doc > ul { margin: 8px 0; }
+  .doc h2.sec { font-size: 20px; margin: 26px 0 10px; }
+  .item { padding: 18px; margin-bottom: 14px; }
+  .item h3 { font-size: 19px; margin-bottom: 10px; }
+  .item p { margin: 8px 0; }
+  .item ul { margin: 6px 0; padding-left: 20px; }
+  .item li { margin: 3px 0; overflow-wrap: anywhere; }
+  .item code { background: var(--chip); border-radius: 3px; padding: 1px 5px; font: 13px ui-monospace, Consolas, monospace; }
+  .copybox { border: 1px solid var(--line); border-radius: var(--r); margin: 10px 0; overflow: hidden; }
+  .copyhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 8px 7px 12px; background: var(--chip); font-weight: 500; font-size: 14px; }
+  .copybox pre { margin: 0; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 15px; background: var(--card); }
+  .media { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; margin: 10px 0; }
+  .media img { max-width: 240px; max-height: 300px; border-radius: var(--r); border: 1px solid var(--line); background: var(--chip); }
+  details { margin-top: 8px; }
+  details summary { cursor: pointer; color: var(--accent); font-size: 14px; font-weight: 500; }
+  .kv { display: grid; grid-template-columns: 110px 1fr; gap: 4px 12px; font-size: 14px; margin-top: 8px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; overflow-wrap: anywhere; }
+  .stories { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .stories .item { margin: 0; }
+
+  /* help */
+  #help { position: fixed; inset: 0; z-index: 20; background: rgba(10,20,25,.55); display: grid; place-items: center; padding: 16px; }
+  .helpbox { background: var(--card); border-radius: var(--r-lg); width: 100%; max-width: 620px; max-height: 92vh; overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .helpbox .strip { height: 5px; background: var(--rainbow); }
+  .helpbox .in { padding: 24px 26px 26px; }
+  .helpbox h2 { font-size: 24px; margin: 8px 0 4px; }
+  .helpbox .lead { color: var(--muted); margin: 0 0 16px; }
+  .step { display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .step .n { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--accent-text); display: grid; place-items: center; font-weight: 600; }
+  .step b { display: block; font-weight: 500; }
+  .step span { color: var(--muted); font-size: 15px; }
+  .tip { background: var(--accent-soft); border-radius: var(--r); padding: 10px 12px; margin-top: 12px; font-size: 15px; }
 </style>
 </head>
 <body>
+
 <div id="lock">
   <form class="lockbox" id="lockForm">
-    <h1>AMP</h1>
-    <p>MNjcc marketing tools in one place. Enter the team passcode to continue.</p>
-    <input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
-    <label><input type="checkbox" id="remember" checked> Remember on this device</label>
-    <button class="primary" id="unlock" type="submit">Open</button>
-    <div id="lockMsg"></div>
+    <div class="strip"></div>
+    <div class="in">
+      <div class="mark"><img data-logo alt=""><div><h1>AMP</h1><div class="sub">Automated Marketing Platform</div></div></div>
+      <p>The MNjcc marketing team's tools in one place. Enter the team passcode to continue.</p>
+      <input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
+      <label><input type="checkbox" id="remember" checked> Remember on this device</label>
+      <button class="btn primary wide" id="unlock" type="submit">Open</button>
+      <div id="lockMsg"></div>
+    </div>
   </form>
 </div>
 
 <div id="app" class="hidden">
 <header>
   <div class="bar">
-    <div class="brand">AMP<small>Automated Marketing Platform</small></div>
+    <button class="brand" data-tab="home" title="Home"><img data-logo alt=""><b>AMP</b><small>Automated<br>Marketing Platform</small></button>
     <nav id="tabs">
+      <button data-tab="home">Home</button>
       <button data-tab="photos">Photo Finder</button>
+      <button data-tab="posts">Posting Package</button>
+      <button data-tab="stories">Story Maker</button>
       <button data-tab="links">Deep Link Finder</button>
+      <button data-tab="short">Short Link Maker</button>
     </nav>
-    <button class="lockbtn" id="lockBtn" title="Forget the passcode on this device">Lock</button>
+    <div class="tools">
+      <button class="btn small" id="helpBtn">? Help</button>
+      <button class="btn small" id="lockBtn" title="Forget the passcode on this device">Lock</button>
+    </div>
   </div>
 </header>
+
 <main>
+  <section id="tab-home" class="hidden">
+    <div class="hero">
+      <div class="eyebrow both">MNjcc Marketing</div>
+      <h1><span>A</span>MP</h1>
+      <div class="tag">Automated Marketing Platform</div>
+      <p>Everything the marketing team reaches for every day, in one place: find the right photo, grab today's posts and stories, and get
+        registration links that track where people came from.</p>
+    </div>
+    <div class="apps" id="apps"></div>
+  </section>
+
   <section id="tab-photos" class="hidden"><iframe id="photoFrame" title="Photo Finder"></iframe></section>
 
+  <section id="tab-posts" class="hidden">
+    <div class="pagehead"><div class="eyebrow">Posting Package</div><h2>Today's posts, ready to copy</h2>
+      <p>Each post has its graphic, Facebook copy, Instagram copy and tracking links. Pick a day, then copy what you need.</p></div>
+    <div class="daybar"><select id="postDay" aria-label="Day"></select><span class="meta" id="postMeta"></span></div>
+    <div class="doc" id="postDoc"></div>
+  </section>
+
+  <section id="tab-stories" class="hidden">
+    <div class="pagehead"><div class="eyebrow">Story Maker</div><h2>Instagram stories for the day</h2>
+      <p>Each story has its copy, its link and its button text, in the order to post them. Pick a day, then copy each piece into Instagram.</p></div>
+    <div class="daybar"><select id="storyDay" aria-label="Day"></select><span class="meta" id="storyMeta"></span></div>
+    <div id="storyDoc"></div>
+  </section>
+
   <section id="tab-links" class="hidden">
-    <p class="how"><b>Get a registration link for anything on the community portal.</b> Search for the program, press the link you want,
-      then tick where it will be used and press Generate. <b>Session link</b> is usually the right one: it opens one specific class or series.
-      <b>Program link</b> opens the whole program page, and <b>Option link</b> opens one date or choice.</p>
+    <div class="pagehead"><div class="eyebrow">Deep Link Finder</div><h2>Registration links for any program</h2>
+      <p>Search for a program, press the link you want, then make a short link for each place it will be used.</p></div>
     <div class="dl">
-      <div class="find">
-        <input type="search" id="q" placeholder="Search programs, courses, sessions or dates (e.g. joy of fashion, swim, Jan 17)" autocomplete="off">
+      <div>
+        <input type="search" class="field" id="q" placeholder="Search programs, courses, sessions or dates (e.g. joy of fashion, swim, Jan 17)" autocomplete="off">
         <div class="chips" id="cats"></div>
         <div class="meta" id="meta"></div>
         <div id="results"></div>
       </div>
-      <aside class="panel" id="panel"><div class="empty">Pick a program, course, session or option on the left to get its community portal link and short links.</div></aside>
+      <aside class="card panel" id="panel"><div class="empty">Pick a program, course, session or option on the left to get its link.</div></aside>
+    </div>
+  </section>
+
+  <section id="tab-short" class="hidden">
+    <div class="pagehead"><div class="eyebrow">Short Link Maker</div><h2>Short links for any web address</h2>
+      <p>For anything that isn't a registration page: an Eventbrite page, a news story, a form. Paste the address and get a short
+        <code>mnjcc.s.gy</code> link for each place it will be used.</p></div>
+    <div class="card panel" style="position:static;max-width:640px" id="shortPanel">
+      <label class="lab" for="sUrl" style="margin-top:0">Web address to shorten</label>
+      <input type="url" id="sUrl" placeholder="https://…" autocomplete="off" spellcheck="false">
+      <label class="lab" for="sTitle">What is it for?</label>
+      <input type="text" id="sTitle" placeholder="e.g. Chanukah party tickets" maxlength="80">
+      <div id="sBox"></div>
     </div>
   </section>
 </main>
+</div>
+
+<div id="help" class="hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="helpbox"><div class="strip"></div><div class="in" id="helpIn"></div></div>
 </div>
 
 <script>
@@ -163,6 +301,31 @@ const store = { get(k) { try { return localStorage.getItem(k); } catch { return 
 const session = { get(k) { try { return sessionStorage.getItem(k); } catch { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
   del(k) { try { sessionStorage.removeItem(k); } catch {} } };
 const PASS_KEY = "mnjcc_photo_pass", SESSION_PASS = "amp_pass";   // shared with Photo Finder (photos.html)
+document.querySelectorAll("[data-logo]").forEach(i => { i.src = document.querySelector('link[rel="apple-touch-icon"]').href; });
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const today = () => new Date().toLocaleDateString("en-CA");
+const fmtDate = d => new Date(d + "T12:00:00").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" });
+const dayLabel = d => (d === today() ? "Today · " : "") + new Date(d + "T12:00:00").toLocaleDateString("en-CA", { weekday: "long", month: "long", day: "numeric" });
+let LINKS = null, REGISTRY = {}, BACKEND = null;
+
+/* ---------- the apps ---------- */
+const ICON = {
+  photos: '<path d="M4 7h3l2-2h6l2 2h3v12H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  posts: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+  stories: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>',
+  links: '<circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/>',
+  short: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+};
+const svg = k => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
+const APPS = [
+  { id: "photos", name: "Photo Finder", c: "var(--teal)", text: "Search the whole photo library in plain words, like “kids swimming” or “seniors dancing”. Filter by department, year and quality." },
+  { id: "posts", name: "Posting Package", c: "var(--purple)", text: "The day's social posts: each graphic with its Facebook and Instagram copy and tracking links, ready to copy." },
+  { id: "stories", name: "Story Maker", c: "var(--orange)", text: "The day's Instagram stories in posting order: copy, link and button text for each one." },
+  { id: "links", name: "Deep Link Finder", c: "var(--blue)", text: "Find the registration link for any program, course or session, and make a short link for each place you'll use it." },
+  { id: "short", name: "Short Link Maker", c: "var(--green)", text: "Turn any web address into short mnjcc.s.gy links that show whether people came from Instagram, Facebook, Yodeck or a flyer." },
+];
+$("#apps").innerHTML = APPS.map(a => `<button class="card app" style="--c:${a.c}" data-tab="${a.id}">
+  <span class="ico">${svg(a.id)}</span><h3>${a.name}</h3><p>${a.text}</p><span class="go">Open ${a.name} →</span></button>`).join("");
 
 /* ---------- passcode: everything except this page is encrypted with it ---------- */
 let KEY = null;
@@ -178,15 +341,14 @@ async function unlock(pass) {
   KEY = await deriveKey(pass, meta);
   try { await openBlob(b64(meta.check).buffer); } catch (e) { KEY = null; throw new Error("wrong"); }
   const gz = await openBlob(await (await fetch("amp.bin", { cache: "no-cache" })).arrayBuffer());
-  const aim = JSON.parse(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
-  LINKS = aim.links; BACKEND = aim.backend || null;
-  index(); renderCats(); render();
-  if (BACKEND) loadRegistry().then(() => { if (sel) renderShort(); }).catch(() => {});
+  const amp = JSON.parse(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
+  LINKS = amp.links; BACKEND = amp.backend || null;
+  index(); renderCats(); render(); shortBox.render();
+  if (BACKEND) loadRegistry().then(() => { deepBox.render(); shortBox.render(); }).catch(() => {});
 }
 function showApp() {
   $("#lock").classList.add("hidden"); $("#app").classList.remove("hidden");
-  const first = PHOTO_HASH ? "photos" : store.get("amp.tab");
-  showTab(document.getElementById("tab-" + first) ? first : "photos");
+  showTab(PHOTO_HASH ? "photos" : "home");
 }
 $("#lockForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -209,16 +371,43 @@ $("#lockBtn").addEventListener("click", () => { store.del(PASS_KEY); session.del
 const PHOTO_HASH = /^#(q|dept|program|year|pg|ev|portraits)=/.test(location.hash) ? location.hash : "";
 
 /* ---------- tabs ---------- */
+let TAB = "home";
 function showTab(name) {
+  if (!document.getElementById("tab-" + name)) name = "home";
+  TAB = name;
   document.querySelectorAll("main > section").forEach(s => s.classList.toggle("hidden", s.id !== "tab-" + name));
   document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
   document.querySelector("main").classList.toggle("wide", name === "photos");
   if (name === "photos" && !$("#photoFrame").getAttribute("src")) $("#photoFrame").src = "photos.html" + PHOTO_HASH;
-  store.set("amp.tab", name);
+  if (name === "posts") loadDays("posts");
+  if (name === "stories") loadDays("stories");
+  if (name !== "photos") window.scrollTo(0, 0);
 }
-$("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) showTab(b.dataset.tab); });
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-tab]"); if (b) showTab(b.dataset.tab);
+  const c = e.target.closest("[data-copy]"); if (c) copyText(c, COPIES[+c.dataset.copy]);
+});
+const COPIES = [];
+const copyBtn = (text, label = "Copy") => `<button class="btn small" data-copy="${COPIES.push(text) - 1}">${label}</button>`;
+async function copyText(btn, text) {
+  const old = btn.textContent;
+  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied ✓"; } catch { btn.textContent = "Couldn't copy"; }
+  setTimeout(() => { btn.textContent = old; }, 1500);
+}
 
-/* ---------- deep link finder ---------- */
+/* ---------- talking to the private repo (files, short link job) ---------- */
+async function gh(path, opt = {}) {
+  const r = await fetch(`https://api.github.com/repos/${BACKEND.repo}${path}`, { method: opt.method || "GET", cache: "no-store",
+    body: opt.body ? JSON.stringify(opt.body) : undefined,
+    headers: { Authorization: `Bearer ${BACKEND.token}`, Accept: opt.raw ? "application/vnd.github.raw+json" : "application/vnd.github+json" } });
+  if (!r.ok) throw new Error("GitHub " + r.status);
+  return opt.raw === "blob" ? r.blob() : opt.raw === "text" ? r.text() : r.status === 204 ? null : r.json();
+}
+const repoPath = p => "/contents/" + p.split("/").map(encodeURIComponent).join("/") + `?ref=main&t=${Date.now()}`;
+async function loadRegistry() { REGISTRY = (await gh(repoPath("data/shortlinks.json"), { raw: true })).links || {}; }
+const lastRun = async () => ((await gh("/actions/workflows/shortlinks.yml/runs?per_page=1")).workflow_runs || [])[0];
+
+/* ---------- short links: one box used by Deep Link Finder and Short Link Maker ---------- */
 // Same naming as tools/shortlinks.py, which creates the links.
 const CHANNELS = [
   { id: "yodeck", label: "Yodeck", suffix: "yodeck" },
@@ -228,22 +417,102 @@ const CHANNELS = [
   { id: "flyer", label: "Flyer / print", suffix: "flyer" },
 ];
 const SHORT_DOMAIN = "mnjcc.s.gy";
-let LINKS = null, REGISTRY = {}, BACKEND = null;   // BACKEND: set once AMP is published and can start the short-link job
-let cat = "", sel = null, open = new Set(), busy = false, failed = false;
 const picked = new Set((store.get("amp.channels") || "yodeck,instagram,facebook,linkedin").split(",").filter(Boolean));
+const slugify = s => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/&/g, " and ")
+  .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").split("-").reduce((a, w) => (a + "-" + w).length <= 33 || !a ? (a ? a + "-" + w : w) : a + "\u0000", "").split("\u0000")[0].slice(0, 40);
+const sameDest = (a, b) => a.replace(/\/$/, "") === b.replace(/\/$/, "");
 
-const today = () => new Date().toLocaleDateString("en-CA");
-const fmtDate = d => new Date(d + "T12:00:00").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" });
+// target() -> { url, title } or null. The box keeps its own campaign name once the person edits it.
+function makeShortBox(root, target) {
+  let busy = false, failed = false, slug = "", touched = false, lastTitle = null;
+  function render() {
+    const t = target();
+    if (!t) { root.innerHTML = ""; return; }
+    if (t.title !== lastTitle) { lastTitle = t.title; touched = false; }
+    if (!touched) slug = slugify(t.title);
+    root.innerHTML = `
+      <h3>Where will it be used?</h3>
+      <div class="cols">${CHANNELS.map(ch => `<label><input type="checkbox" data-ch="${ch.id}" ${picked.has(ch.id) ? "checked" : ""}> ${ch.label}</label>`).join("")}</div>
+      <h3>Short link name</h3>
+      <input type="text" data-slug value="${esc(slug)}" maxlength="40" spellcheck="false" aria-label="Short link name">
+      <table class="short"></table>
+      <button class="btn primary wide" data-go></button>
+      <div data-note></div>`;
+    table();
+  }
+  function table() {
+    const t = target(); if (!t) return;
+    const s = slugify(slug);
+    const rows = CHANNELS.filter(ch => picked.has(ch.id)).map(ch => {
+      const path = `${s}-${ch.suffix}`, r = REGISTRY[path];
+      const clash = r && (r.status === "conflict" || !sameDest(r.url, t.url));
+      let state = `<span class="badge off">Not made yet</span>`;
+      if (r && !clash && r.short) state = `<span class="badge ok">Ready</span> ${copyBtn(r.short)}`;
+      else if (clash) state = `<span class="badge wait">Name taken</span>`;
+      return { id: ch.id, missing: !(r && !clash && r.short), clash: !!clash,
+        html: `<tr><td>${ch.label}</td><td><code>${esc(`${SHORT_DOMAIN}/${path}`)}</code></td><td style="text-align:right">${state}</td></tr>` };
+    });
+    root.querySelector(".short").innerHTML = rows.map(r => r.html).join("");
+    const todo = rows.filter(r => r.missing && !r.clash), clash = rows.some(r => r.clash), go = root.querySelector("[data-go]");
+    go.dataset.channels = todo.map(r => r.id).join(",");
+    go.textContent = busy ? "Making your links…" : !rows.length ? "Tick at least one place" : !s ? "Add a short link name"
+      : todo.length ? `Generate ${todo.length} short link${todo.length > 1 ? "s" : ""}` : "All short links are ready";
+    go.disabled = busy || !rows.length || !s || !todo.length || !BACKEND;
+    root.querySelector("[data-note]").innerHTML = busy ? `<div class="note info">This takes about 20 seconds. Stay on this page.</div>`
+      : failed ? `<div class="note bad">That didn't work. Try again in a minute, or message Adam.</div>`
+      : clash ? `<div class="note bad">A short link with this name already points somewhere else. Change the short link name.</div>` : "";
+  }
+  async function generate() {
+    const t = target(), channels = root.querySelector("[data-go]").dataset.channels.split(",").filter(Boolean), s = slugify(slug);
+    if (!t || !channels.length || !s || busy) return;
+    busy = true; failed = false; table();
+    try {
+      const before = await lastRun();
+      await gh("/actions/workflows/shortlinks.yml/dispatches", { method: "POST", body: { ref: "main", inputs: { request: JSON.stringify(
+        { slug: s, title: t.title, url: t.url, channels }) } } });
+      let run = null;
+      for (let i = 0; i < 40 && !(run && run.status === "completed"); i++) {
+        await wait(3000);
+        const r = await lastRun();
+        run = r && (!before || r.id !== before.id) ? r : null;
+      }
+      if (!run || run.status !== "completed") throw new Error("timed out");
+      await loadRegistry();
+      failed = run.conclusion !== "success";
+    } catch (err) { failed = true; }
+    busy = false;
+    if (root.querySelector(".short")) table();
+  }
+  root.addEventListener("click", e => { if (e.target.closest("[data-go]")) generate(); });
+  root.addEventListener("input", e => {
+    if (e.target.matches("[data-slug]")) { slug = e.target.value; touched = true; table(); }
+    if (e.target.dataset.ch) { e.target.checked ? picked.add(e.target.dataset.ch) : picked.delete(e.target.dataset.ch);
+      store.set("amp.channels", [...picked].join(",")); table(); }
+  });
+  return { render };
+}
+
+/* ---------- Short Link Maker ---------- */
+const validUrl = u => { try { const x = new URL(u); return x.protocol === "https:" && x.hostname.includes("."); } catch { return false; } };
+const shortBox = makeShortBox($("#sBox"), () => {
+  const url = $("#sUrl").value.trim(), title = $("#sTitle").value.trim();
+  return validUrl(url) && title ? { url, title } : null;
+});
+["#sUrl", "#sTitle"].forEach(s => $(s).addEventListener("input", () => {
+  const url = $("#sUrl").value.trim();
+  shortBox.render();
+  if (!$("#sBox").innerHTML) $("#sBox").innerHTML = `<div class="note info">${url && !validUrl(url) ? "That doesn't look like a full web address. It should start with https://" : "Fill in both boxes above to continue."}</div>`;
+}));
+
+/* ---------- Deep Link Finder ---------- */
+let cat = "", sel = null, open = new Set();
 function windowOf(s) {
   const t = today();
   if (s.f && t < s.f) return { k: "wait", text: "Opens " + fmtDate(s.f) };
   if (s.t && t > s.t) return { k: "off", text: "Closed " + fmtDate(s.t) };
   return { k: "ok", text: "Open now" };
 }
-const slugify = s => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/&/g, " and ")
-  .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").split("-").reduce((a, w) => (a + "-" + w).length <= 33 || !a ? (a ? a + "-" + w : w) : a + " ", "").split(" ")[0].slice(0, 40);
 const season = /\s*[-–]\s*(winter|spring|summer|fall)\s+\d{4}\b/i;
-
 function index() {
   LINKS.courses.forEach((c, i) => {
     const p = LINKS.programs[c.p];
@@ -252,7 +521,6 @@ function index() {
     c.s.forEach(s => { s.text = s.n.toLowerCase(); s.o.forEach(o => { o.text = o.n.toLowerCase(); }); });
   });
 }
-
 function search() {
   const words = $("#q").value.toLowerCase().split(/\s+/).filter(Boolean);
   const out = [];
@@ -274,13 +542,11 @@ function search() {
   else out.sort((a, b) => a.c.n.localeCompare(b.c.n));
   return out;
 }
-
 const key = (c, si, oi) => [c.i, si ?? "", oi ?? ""].join("|");
-const pickBtn = (k, label) => `<button class="pick${sel && sel.k === k ? " on" : ""}" data-pick="${k}">${label}</button>`;
-
+const pickBtn = (k, label) => `<button class="btn small${sel && sel.k === k ? " on" : ""}" data-pick="${k}">${label}</button>`;
 function render() {
   const res = search(), max = 40;
-  $("#meta").textContent = `${res.length} of ${LINKS.courses.length} courses · Salesforce "Deep Links" report from ${fmtDate(LINKS.report_date)}`;
+  $("#meta").textContent = `${res.length} of ${LINKS.courses.length} courses · from the Salesforce report of ${fmtDate(LINKS.report_date)}`;
   $("#results").innerHTML = res.slice(0, max).map(({ c, hit }) => {
     const p = LINKS.programs[c.p];
     const sessions = c.s.map((s, si) => {
@@ -293,12 +559,11 @@ function render() {
         ${pickBtn(ok, "Session link")}</div>
         ${opts.length ? `<div class="opts">${opts.map(({ o, oi }) => `<div class="row"><div class="t">${esc(o.n)}</div>${pickBtn(key(c, si, oi), "Option link")}</div>`).join("")}</div>` : ""}</div>`;
     }).join("");
-    return `<div class="course"><div class="row"><div class="t"><b>${esc(c.n)}</b><span>${esc(p.cat)} · ${esc(p.n)}</span></div>
+    return `<div class="card course"><div class="row"><div class="t"><b>${esc(c.n)}</b><span>${esc(p.cat)} · ${esc(p.n)}</span></div>
       ${pickBtn("p" + c.p, "Program link")}${pickBtn(key(c), "Course link")}</div>${sessions}</div>`;
   }).join("") + (res.length > max ? `<div class="meta">Showing the first ${max}. Type more to narrow it down.</div>` : "")
     || `<div class="empty">Nothing matches. Check the spelling, or the program may be newer than the report.</div>`;
 }
-
 function resolve(k) {
   if (k[0] === "p") { const p = LINKS.programs[+k.slice(1)]; return { k, level: "Program", name: p.n, q: p.q, ctx: p.cat }; }
   const [ci, si, oi] = k.split("|"), c = LINKS.courses[+ci], p = LINKS.programs[c.p];
@@ -308,106 +573,185 @@ function resolve(k) {
   const o = s.o[+oi];
   return { k, level: "Option", name: o.n, q: o.q, ctx: `${s.n} · ${p.n}`, sessions: [s], base: c.n };
 }
-
+let deepBox = { render() {} };
 function renderPanel() {
   if (!sel) return;
   const url = LINKS.portal + sel.q;
   const waits = (sel.sessions || []).map(windowOf).filter(w => w.k !== "ok");
   const allWait = sel.sessions && waits.length === sel.sessions.length;
-  const slug = sel.slug;
   $("#panel").innerHTML = `
     <h2>${esc(sel.name)}</h2><div class="lvl">${sel.level} link · ${esc(sel.ctx)}</div>
-    <div class="url"><input readonly value="${esc(url)}" aria-label="Community portal link"><button class="pick" data-copy="${esc(url)}">Copy</button>
-      <a class="pick" href="${esc(url)}" target="_blank" rel="noopener" style="text-decoration:none">Open</a></div>
+    <div class="url"><input readonly value="${esc(url)}" aria-label="Registration link">${copyBtn(url)}
+      <a class="btn small" href="${esc(url)}" target="_blank" rel="noopener">Open</a></div>
     ${allWait ? `<div class="note wait">${waits[0].k === "wait" ? `Registration o${waits[0].text.slice(1)}. Until then this link lands on the portal's general browse page.` : `${waits[0].text}. This link no longer opens the session.`}</div>` : ""}
-    <h3>Collateral</h3>
-    <div class="cols">${CHANNELS.map(ch => `<label><input type="checkbox" data-ch="${ch.id}" ${picked.has(ch.id) ? "checked" : ""}> ${ch.label}</label>`).join("")}</div>
-    <h3>Campaign name</h3>
-    <input type="text" id="slug" value="${esc(slug)}" maxlength="40" spellcheck="false" aria-label="Campaign name used in the short links">
-    <table class="short" id="short"></table>
-    <button class="primary" id="go"></button>
-    <div id="goNote"></div>`;
-  renderShort();
+    <div id="deepShort"></div>`;
+  const mine = sel;
+  deepBox = makeShortBox($("#deepShort"), () => ({ url: LINKS.portal + mine.q, title: (mine.level === "Option" ? mine.base : mine.name).replace(season, "") }));
+  deepBox.render();
 }
-
-function renderShort() {
-  const slug = slugify($("#slug").value);
-  const dest = LINKS.portal + sel.q;
-  const rows = CHANNELS.filter(ch => picked.has(ch.id)).map(ch => {
-    const path = `${slug}-${ch.suffix}`, r = REGISTRY[path], short = `${SHORT_DOMAIN}/${path}`;
-    let state = `<span class="badge off">Not made yet</span>`;
-    const clash = r && (r.status === "conflict" || r.url !== dest);
-    if (r && !clash && r.short) state = `<span class="badge ok">Ready</span> <button class="pick" data-copy="${esc(r.short)}">Copy</button>`;
-    else if (clash) state = `<span class="badge wait">Name taken</span>`;
-    return { id: ch.id, missing: !(r && !clash && r.short), clash: !!clash, html: `<tr><td>${ch.label}</td><td><code>${esc(short)}</code></td><td style="text-align:right">${state}</td></tr>` };
-  });
-  $("#short").innerHTML = rows.map(r => r.html).join("");
-  const missing = rows.filter(r => r.missing && !r.clash).length, clash = rows.some(r => r.clash);
-  const go = $("#go");
-  go.dataset.channels = rows.filter(r => r.missing && !r.clash).map(r => r.id).join(",");
-  go.textContent = busy ? "Making your links…" : !rows.length ? "Tick at least one collateral" : !slug ? "Add a campaign name" : missing ? `Generate ${missing} short link${missing > 1 ? "s" : ""}` : "All short links are ready";
-  go.disabled = busy || !rows.length || !slug || !missing || !BACKEND;
-  $("#goNote").innerHTML = busy ? `<div class="note info">This takes about 20 seconds. Stay on this page.</div>`
-    : failed ? `<div class="note bad">That didn't work. Try again in a minute, or message Adam.</div>`
-    : clash ? `<div class="note bad">A short link with this name already points somewhere else. Change the campaign name.</div>`
-    : !BACKEND && missing ? `<div class="note info">Creating short links switches on when AMP is published. The names above are what will be created.</div>` : "";
-}
-
 $("#q").addEventListener("input", render);
 $("#cats").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; cat = b.dataset.cat; renderCats(); render(); });
 $("#results").addEventListener("click", e => {
   const o = e.target.closest("[data-open]"), p = e.target.closest("[data-pick]");
   if (o) { open.has(o.dataset.open) ? open.delete(o.dataset.open) : open.add(o.dataset.open); render(); }
-  if (p) { sel = resolve(p.dataset.pick); sel.slug = slugify((sel.level === "Option" ? sel.base : sel.name).replace(season, "")); render(); renderPanel(); }
+  if (p) { sel = resolve(p.dataset.pick); render(); renderPanel(); }
 });
-async function gh(path, opt = {}) {
-  const r = await fetch(`https://api.github.com/repos/${BACKEND.repo}${path}`, { method: opt.method || "GET", cache: "no-store",
-    body: opt.body ? JSON.stringify(opt.body) : undefined,
-    headers: { Authorization: `Bearer ${BACKEND.token}`, Accept: opt.raw ? "application/vnd.github.raw+json" : "application/vnd.github+json" } });
-  if (!r.ok) throw new Error("GitHub " + r.status);
-  return r.status === 204 ? null : r.json();
-}
-async function loadRegistry() { REGISTRY = (await gh(`/contents/data/shortlinks.json?ref=main&t=${Date.now()}`, { raw: true })).links || {}; }
-const lastRun = async () => ((await gh("/actions/workflows/shortlinks.yml/runs?per_page=1")).workflow_runs || [])[0];
-const wait = ms => new Promise(r => setTimeout(r, ms));
-
-async function generate() {
-  const channels = $("#go").dataset.channels.split(",").filter(Boolean), slug = slugify($("#slug").value);
-  if (!channels.length || !slug || busy) return;
-  const mine = sel;
-  busy = true; failed = false; renderShort();
-  try {
-    const before = await lastRun();
-    await gh("/actions/workflows/shortlinks.yml/dispatches", { method: "POST", body: { ref: "main", inputs: { request: JSON.stringify(
-      { slug, title: (mine.level === "Option" ? mine.base : mine.name).replace(season, ""), url: LINKS.portal + mine.q, channels }) } } });
-    let run = null;
-    for (let i = 0; i < 40 && !(run && run.status === "completed"); i++) {
-      await wait(3000);
-      const r = await lastRun();
-      run = r && (!before || r.id !== before.id) ? r : null;
-    }
-    if (!run || run.status !== "completed") throw new Error("timed out");
-    await loadRegistry();
-    failed = run.conclusion !== "success";
-  } catch (err) { failed = true; }
-  busy = false;
-  if (sel === mine) renderShort();
-}
-
-$("#panel").addEventListener("click", async e => {
-  if (e.target.id === "go") return generate();
-  const c = e.target.closest("[data-copy]");
-  if (c) { try { await navigator.clipboard.writeText(c.dataset.copy); c.textContent = "Copied"; } catch { c.textContent = "Select and copy"; } setTimeout(() => { c.textContent = "Copy"; }, 1500); }
-});
-$("#panel").addEventListener("input", e => {
-  if (e.target.id === "slug") { sel.slug = e.target.value; renderShort(); }
-  if (e.target.dataset.ch) { e.target.checked ? picked.add(e.target.dataset.ch) : picked.delete(e.target.dataset.ch); store.set("amp.channels", [...picked].join(",")); renderShort(); }
-});
-
 function renderCats() {
   const cats = [...new Set(LINKS.programs.flatMap(p => p.cat.split(", ")))].sort();
   $("#cats").innerHTML = [["", "All"], ...cats.map(c => [c, c])].map(([v, l]) => `<button class="chip${cat === v ? " on" : ""}" data-cat="${esc(v)}">${esc(l)}</button>`).join("");
 }
+
+/* ---------- Posting Package + Story Maker: read the day's file from the private repo ---------- */
+const DAYS = { posts: { dir: "posts/packages", sel: "#postDay", meta: "#postMeta", out: "#postDoc", loaded: false },
+               stories: { dir: "stories/daily", sel: "#storyDay", meta: "#storyMeta", out: "#storyDoc", loaded: false } };
+const OFFLINE = `<div class="note bad">Couldn't load this. Check your internet and try again, or message Adam.</div>`;
+async function loadDays(kind) {
+  const d = DAYS[kind];
+  if (d.loaded) return;
+  if (!BACKEND) { $(d.out).innerHTML = OFFLINE; return; }
+  $(d.out).innerHTML = `<div class="empty">Loading…</div>`;
+  try {
+    const list = await gh(repoPath(d.dir));
+    const days = list.map(x => x.name.replace(/\.md$/, "")).filter(n => /^\d{4}-\d{2}-\d{2}$/.test(n)).sort().reverse();
+    if (!days.length) { $(d.out).innerHTML = `<div class="empty">Nothing has been prepared yet.</div>`; return; }
+    $(d.sel).innerHTML = days.map(x => `<option value="${x}">${dayLabel(x)}</option>`).join("");
+    $(d.sel).onchange = () => loadDay(kind, $(d.sel).value);
+    d.loaded = true;
+    $(d.meta).textContent = days[0] === today() ? "" : `Nothing prepared for today yet. Showing the most recent day. ${kind === "posts" ? "Packages" : "Stories"} are prepared by Adam.`;
+    loadDay(kind, days[0]);
+  } catch (e) { $(d.out).innerHTML = OFFLINE; }
+}
+async function loadDay(kind, day) {
+  const d = DAYS[kind];
+  $(d.out).innerHTML = `<div class="empty">Loading…</div>`;
+  try {
+    const text = await gh(repoPath(kind === "posts" ? `${d.dir}/${day}/posts.md` : `${d.dir}/${day}.md`), { raw: "text" });
+    if ($(d.sel).value !== day) return;
+    if (kind === "posts") { $(d.out).innerHTML = renderPackage(text, `${d.dir}/${day}`); loadMedia($(d.out)); }
+    else $(d.out).innerHTML = renderStories(text);
+  } catch (e) { $(d.out).innerHTML = OFFLINE; }
+}
+
+// A small Markdown reader for the package file: headings, lists, bold, and copy boxes for each block of copy.
+const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>")
+  .replace(/(https?:\/\/[^\s<)]+[^\s<).,;:])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+function renderPackage(md, dir) {
+  const lines = md.replace(/\r/g, "").split("\n");
+  let html = "", inItem = false, list = false, label = "";
+  const endList = () => { if (list) { html += list === "d" ? "</ul></details>" : "</ul>"; list = false; } };
+  const endItem = () => { endList(); if (inItem) { html += "</div>"; inItem = false; } };
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (l.startsWith("```")) {
+      const body = []; i++;
+      while (i < lines.length && !lines[i].startsWith("```")) body.push(lines[i++]);
+      endList();
+      const text = body.join("\n");
+      html += `<div class="copybox"><div class="copyhead"><span>${esc(label || "Copy")}</span>${copyBtn(text, "Copy " + (label || "text"))}</div><pre>${esc(text)}</pre></div>`;
+      label = "";
+    } else if (l.startsWith("### ")) { endItem(); html += `<div class="card item"><h3>${inline(l.slice(4).replace(/^POST:\s*/, ""))}</h3>`; inItem = true; }
+    else if (l.startsWith("## ")) { endItem(); html += `<h2 class="sec">${inline(l.slice(3))}</h2>`; }
+    else if (l.startsWith("# ")) { /* the page already has a title */ }
+    else if (/^\s*[-*] /.test(l)) { if (!list) { html += label ? `<details><summary>${esc(label)}</summary><ul>` : "<ul>"; list = label ? "d" : true; label = ""; }
+      html += `<li>${inline(l.replace(/^\s*[-*] /, ""))}</li>`; }
+    else if (!l.trim()) endList();
+    else {
+      endList();
+      const m = l.match(/^\*\*(.+?)\*\*:?\s*$/);
+      if (m) { label = m[1]; continue; }
+      const files = [...l.matchAll(/`([^`]+\.(png|jpe?g|gif|webp|mp4|mov|zip|pdf))`/gi)].map(x => x[1]);
+      html += `<p>${inline(l)}</p>`;
+      if (files.length) html += `<div class="media">${files.map(f => `<div data-file="${esc(dir + "/" + f)}"><span class="empty">Loading ${esc(f)}…</span></div>`).join("")}</div>`;
+    }
+  }
+  endItem();
+  return html;
+}
+async function loadMedia(root) {
+  for (const box of root.querySelectorAll("[data-file]")) {
+    const path = box.dataset.file, name = path.split("/").pop();
+    try {
+      const url = URL.createObjectURL(await gh(repoPath(path), { raw: "blob" }));
+      const pic = /\.(png|jpe?g|gif|webp)$/i.test(name);
+      box.innerHTML = `${pic ? `<img src="${url}" alt="${esc(name)}"><br>` : ""}<a class="btn small" href="${url}" download="${esc(name)}">Download ${esc(name)}</a>`;
+    } catch (e) { box.innerHTML = `<span class="empty">Couldn't load ${esc(name)}.</span>`; }
+  }
+}
+function renderStories(md) {
+  const parts = md.replace(/\r/g, "").split(/\n## /), head = parts.shift().split("\n");
+  const status = (head.find(l => l.startsWith("Status:")) || "").slice(7).trim();
+  const notes = head.filter(l => l.trim() && !l.startsWith("# ") && !l.startsWith("Status:"));
+  const stories = parts.map(p => {
+    const [name, ...rest] = p.split("\n"), f = {};
+    rest.forEach(l => { const m = l.match(/^- ([^:]+):\s*(.*)$/); if (m) f[m[1].trim().toLowerCase()] = m[2].trim(); });
+    return { name: name.trim(), f };
+  }).filter(s => Object.keys(s.f).length);
+  if (!stories.length) return `<div class="empty">No stories are listed for this day.</div>`;
+  const posted = /posted/i.test(status) && !/ready/i.test(status);
+  return `<div class="meta"><span class="badge ${posted ? "off" : /ready/i.test(status) ? "ok" : "wait"}">${esc((status || "In progress").replace(/^./, c => c.toUpperCase()))}</span> · ${stories.length} stor${stories.length > 1 ? "ies" : "y"}, in posting order</div>
+    <div class="stories">${stories.map((s, n) => {
+      const copy = s.f["approved copy"] || s.f["draft copy"] || "", cta = s.f["approved cta"] || s.f["draft cta"] || "";
+      const approved = !!(s.f["approved copy"] || s.f["approved cta"]);
+      const link = ((s.f.link || "").match(/https?:\/\/\S+/) || [""])[0];
+      const box = (lab, text) => text ? `<div class="copybox"><div class="copyhead"><span>${lab}</span>${copyBtn(text, "Copy")}</div><pre>${esc(text)}</pre></div>` : "";
+      const extra = Object.entries(s.f).filter(([k]) => !/copy|cta|^link$/.test(k));
+      return `<div class="card item"><h3>${n + 1}. ${esc(s.name)}</h3>
+        <span class="badge ${approved ? "ok" : "wait"}">${approved ? "Approved by Lauren" : "Draft, not approved yet"}</span>
+        ${box("Copy", copy)}${box("Link", link)}${box("Button text", cta)}
+        ${!link ? `<div class="note info">${esc(s.f.link || "No link for this story.")}</div>` : ""}
+        ${extra.length ? `<details><summary>More details</summary><dl class="kv">${extra.map(([k, v]) => `<dt>${esc(k[0].toUpperCase() + k.slice(1))}</dt><dd>${inline(v)}</dd>`).join("")}</dl></details>` : ""}</div>`;
+    }).join("")}</div>
+    ${notes.length ? `<details style="max-width:900px;margin-top:16px"><summary>Notes for this day</summary>${notes.map(n => `<p class="meta">${inline(n)}</p>`).join("")}</details>` : ""}`;
+}
+
+/* ---------- help: a short picture-style guide for each page ---------- */
+const HELP = {
+  home: { title: "Welcome to AMP", lead: "AMP keeps the marketing team's everyday tools in one place.", steps: [
+    ["Pick a tool", "Press any card on the home page, or use the names along the top."],
+    ["Do the one thing it's for", "Each tool has a short line at the top saying what to do."],
+    ["Stuck? Press Help", "The Help button always explains the page you are on."] ],
+    tip: "Press “Lock” when you finish on a shared computer. It forgets the passcode on that device." },
+  photos: { title: "Photo Finder", lead: "Find photos by describing them.", steps: [
+    ["Type what you want to see", "Plain words work: “kids swimming”, “Hanukkah candles”, “seniors dancing”."],
+    ["Narrow it down", "Use the department buttons and the drop-downs for year, program, shape and rating."],
+    ["Open the photo", "Press a photo to see it larger, then open the full-size original in SharePoint."],
+    ["Help the next person", "Change the stars if a photo is better or worse than rated, or mark it Do Not Use."] ],
+    tip: "More stars means a stronger photo. “Hide 1★ photos” is ticked to keep the weakest ones out of the way." },
+  posts: { title: "Posting Package", lead: "Everything needed to publish the day's posts.", steps: [
+    ["Pick the day", "Today's package shows first when it has been prepared. Use the drop-down for another day."],
+    ["Download the graphic", "Each post shows its picture with a Download button."],
+    ["Copy the words", "Press “Copy Facebook” or “Copy Instagram”, then paste into the post."],
+    ["Check the notes", "“Notes” explains where the copy and links came from, and anything to watch for."] ],
+    tip: "Posts under “Not ready” are missing something, usually copy or a graphic. The note says what." },
+  stories: { title: "Story Maker", lead: "The day's Instagram stories, in the order to post them.", steps: [
+    ["Pick the day", "Today's stories show first when they have been prepared."],
+    ["Go top to bottom", "Stories are numbered in posting order."],
+    ["Copy each piece", "Copy the words, the link for the link sticker, and the button text."],
+    ["Only post approved ones", "A green “Approved by Lauren” badge means it's good to go. Yellow means still a draft."] ],
+    tip: "The link goes in Instagram's link sticker. The button text is what the sticker should say." },
+  links: { title: "Deep Link Finder", lead: "Get a registration link that opens the exact program.", steps: [
+    ["Search for the program", "Type part of its name, a category or a date."],
+    ["Press the link you want", "Session link is usually right: it opens one class or series. Program link opens the whole program page; Option link opens one date."],
+    ["Tick where it will be used", "Yodeck, Instagram, Facebook, LinkedIn or a flyer. Each place gets its own short link."],
+    ["Press Generate, then Copy", "It takes about 20 seconds. Links that already exist show as Ready straight away."] ],
+    tip: "A yellow “Opens …” badge means registration hasn't started. The link will work from that date." },
+  short: { title: "Short Link Maker", lead: "Short links for any web page that isn't a registration page.", steps: [
+    ["Paste the web address", "The full address, starting with https://"],
+    ["Say what it's for", "A few words, like “Chanukah party tickets”. This names the short link."],
+    ["Tick where it will be used", "Each place gets its own link, so you can see which one people clicked."],
+    ["Press Generate, then Copy", "It takes about 20 seconds."] ],
+    tip: "For program registration, use Deep Link Finder instead. It finds the address for you." },
+};
+function showHelp() {
+  const h = HELP[TAB] || HELP.home;
+  $("#helpIn").innerHTML = `<div class="eyebrow">How it works</div><h2 id="helpTitle">${h.title}</h2><p class="lead">${h.lead}</p>
+    ${h.steps.map((s, i) => `<div class="step"><div class="n">${i + 1}</div><div><b>${s[0]}</b><span>${s[1]}</span></div></div>`).join("")}
+    <div class="tip">${h.tip}</div><button class="btn primary wide" id="helpClose">Got it</button>`;
+  $("#help").classList.remove("hidden"); $("#helpClose").focus();
+}
+$("#helpBtn").addEventListener("click", showHelp);
+$("#help").addEventListener("click", e => { if (e.target.id === "help" || e.target.id === "helpClose") $("#help").classList.add("hidden"); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("#help").classList.add("hidden"); });
 
 (async () => {
   const saved = store.get(PASS_KEY) || session.get(SESSION_PASS);
