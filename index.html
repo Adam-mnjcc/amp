@@ -658,6 +658,9 @@ const JOBS = {
   stories_posting: { kind: "stories", box: "#storyJob", what: "today's stories for posting" },
 };
 let pending = null, lastResult = {};
+// Each device can ask Claude for work 50 times a day (Prepare buttons now, chat later). Counted in this browser.
+const DAILY_LIMIT = 50, usedKey = () => "amp.used." + today();
+const usedToday = () => +(store.get(usedKey()) || 0);
 try { pending = JSON.parse(session.get("amp.job") || "null"); } catch {}
 function renderJobs() {
   for (const box of ["#postJob", "#storyJob"]) {
@@ -694,6 +697,7 @@ async function watchJob() {
 async function prepare(job) {
   const j = JOBS[job];
   if (pending || !BACKEND || !j) return;
+  if (usedToday() >= DAILY_LIMIT) { lastResult[j.box] = { ok: false, text: `You've reached today's limit of ${DAILY_LIMIT} requests to Claude on this device. It resets tomorrow. If you need more today, message Adam.` }; renderJobs(); return; }
   if (j.again && [...$("#postDay").options].some(o => o.value === today()) && !confirm(j.again)) return;
   delete lastResult[j.box];
   pending = { job, date: today(), start: Date.now() };
@@ -701,6 +705,7 @@ async function prepare(job) {
   renderJobs();
   try { if (!await startJob("prepare.yml", { job, date: pending.date })) throw new Error("failed"); }
   catch (e) { finishJob(false, "Couldn't start that. Try again in a minute, or message Adam."); return; }
+  store.set(usedKey(), usedToday() + 1);
   watchJob();
 }
 document.addEventListener("click", e => { const b = e.target.closest("[data-prepare]"); if (b) prepare(b.dataset.prepare); });
