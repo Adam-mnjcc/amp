@@ -279,7 +279,7 @@
 
 <script>
 "use strict";
-if (window.top !== window) document.documentElement.classList.add("embedded");   // shown as a tab inside AIM
+if (window.top !== window) document.documentElement.classList.add("embedded");   // shown as a tab inside AMP
 const $ = id => document.getElementById(id);
 const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
                 set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} },
@@ -818,8 +818,8 @@ function showApp() {
 }
 
 (async () => {
-  // Inside AIM the passcode has already been entered once; it is handed over for this browser session.
-  const saved = store.get(PASS_KEY) || (() => { try { return sessionStorage.getItem("aim_pass"); } catch (e) { return null; } })();
+  // Inside AMP the passcode has already been entered once; it is handed over for this browser session.
+  const saved = store.get(PASS_KEY) || (() => { try { return sessionStorage.getItem("amp_pass"); } catch (e) { return null; } })();
   if (!saved) return;
   $("lockMsg").textContent = "Opening…";
   try { await unlock(saved); showApp(); }

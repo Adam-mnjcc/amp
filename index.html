@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>AIM · MNjcc Marketing</title>
+<title>AMP · MNjcc Marketing</title>
 <style>
   :root {
     --bg: #f5f6f8; --card: #ffffff; --text: #1b2130; --muted: #5f6878; --line: #dfe3ea;
@@ -114,7 +114,7 @@
 <body>
 <div id="lock">
   <form class="lockbox" id="lockForm">
-    <h1>AIM</h1>
+    <h1>AMP</h1>
     <p>MNjcc marketing tools in one place. Enter the team passcode to continue.</p>
     <input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
     <label><input type="checkbox" id="remember" checked> Remember on this device</label>
@@ -126,7 +126,7 @@
 <div id="app" class="hidden">
 <header>
   <div class="bar">
-    <div class="brand">AIM<small>All in one marketing</small></div>
+    <div class="brand">AMP<small>Automated Marketing Platform</small></div>
     <nav id="tabs">
       <button data-tab="photos">Photo Finder</button>
       <button data-tab="links">Deep Link Finder</button>
@@ -162,7 +162,7 @@ const store = { get(k) { try { return localStorage.getItem(k); } catch { return 
   del(k) { try { localStorage.removeItem(k); } catch {} } };
 const session = { get(k) { try { return sessionStorage.getItem(k); } catch { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
   del(k) { try { sessionStorage.removeItem(k); } catch {} } };
-const PASS_KEY = "mnjcc_photo_pass", SESSION_PASS = "aim_pass";   // shared with Photo Finder (photos.html)
+const PASS_KEY = "mnjcc_photo_pass", SESSION_PASS = "amp_pass";   // shared with Photo Finder (photos.html)
 
 /* ---------- passcode: everything except this page is encrypted with it ---------- */
 let KEY = null;
@@ -177,7 +177,7 @@ async function unlock(pass) {
   const meta = await (await fetch("meta.json", { cache: "no-cache" })).json();
   KEY = await deriveKey(pass, meta);
   try { await openBlob(b64(meta.check).buffer); } catch (e) { KEY = null; throw new Error("wrong"); }
-  const gz = await openBlob(await (await fetch("aim.bin", { cache: "no-cache" })).arrayBuffer());
+  const gz = await openBlob(await (await fetch("amp.bin", { cache: "no-cache" })).arrayBuffer());
   const aim = JSON.parse(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream("gzip"))).text());
   LINKS = aim.links; BACKEND = aim.backend || null;
   index(); renderCats(); render();
@@ -185,7 +185,7 @@ async function unlock(pass) {
 }
 function showApp() {
   $("#lock").classList.add("hidden"); $("#app").classList.remove("hidden");
-  const first = PHOTO_HASH ? "photos" : store.get("aim.tab");
+  const first = PHOTO_HASH ? "photos" : store.get("amp.tab");
   showTab(document.getElementById("tab-" + first) ? first : "photos");
 }
 $("#lockForm").addEventListener("submit", async e => {
@@ -200,7 +200,7 @@ $("#lockForm").addEventListener("submit", async e => {
     msg.textContent = ""; showApp();
   } catch (err) {
     msg.className = "bad";
-    msg.textContent = err.message === "wrong" ? "That passcode didn't work. Check it and try again." : "Couldn't open AIM. Check your internet and try again.";
+    msg.textContent = err.message === "wrong" ? "That passcode didn't work. Check it and try again." : "Couldn't open AMP. Check your internet and try again.";
   }
   $("#unlock").disabled = false;
 });
@@ -214,7 +214,7 @@ function showTab(name) {
   document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
   document.querySelector("main").classList.toggle("wide", name === "photos");
   if (name === "photos" && !$("#photoFrame").getAttribute("src")) $("#photoFrame").src = "photos.html" + PHOTO_HASH;
-  store.set("aim.tab", name);
+  store.set("amp.tab", name);
 }
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) showTab(b.dataset.tab); });
 
@@ -228,9 +228,9 @@ const CHANNELS = [
   { id: "flyer", label: "Flyer / print", suffix: "flyer" },
 ];
 const SHORT_DOMAIN = "mnjcc.s.gy";
-let LINKS = null, REGISTRY = {}, BACKEND = null;   // BACKEND: set once AIM is published and can start the short-link job
+let LINKS = null, REGISTRY = {}, BACKEND = null;   // BACKEND: set once AMP is published and can start the short-link job
 let cat = "", sel = null, open = new Set(), busy = false, failed = false;
-const picked = new Set((store.get("aim.channels") || "yodeck,instagram,facebook,linkedin").split(",").filter(Boolean));
+const picked = new Set((store.get("amp.channels") || "yodeck,instagram,facebook,linkedin").split(",").filter(Boolean));
 
 const today = () => new Date().toLocaleDateString("en-CA");
 const fmtDate = d => new Date(d + "T12:00:00").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" });
@@ -350,7 +350,7 @@ function renderShort() {
   $("#goNote").innerHTML = busy ? `<div class="note info">This takes about 20 seconds. Stay on this page.</div>`
     : failed ? `<div class="note bad">That didn't work. Try again in a minute, or message Adam.</div>`
     : clash ? `<div class="note bad">A short link with this name already points somewhere else. Change the campaign name.</div>`
-    : !BACKEND && missing ? `<div class="note info">Creating short links switches on when AIM is published. The names above are what will be created.</div>` : "";
+    : !BACKEND && missing ? `<div class="note info">Creating short links switches on when AMP is published. The names above are what will be created.</div>` : "";
 }
 
 $("#q").addEventListener("input", render);
@@ -401,7 +401,7 @@ $("#panel").addEventListener("click", async e => {
 });
 $("#panel").addEventListener("input", e => {
   if (e.target.id === "slug") { sel.slug = e.target.value; renderShort(); }
-  if (e.target.dataset.ch) { e.target.checked ? picked.add(e.target.dataset.ch) : picked.delete(e.target.dataset.ch); store.set("aim.channels", [...picked].join(",")); renderShort(); }
+  if (e.target.dataset.ch) { e.target.checked ? picked.add(e.target.dataset.ch) : picked.delete(e.target.dataset.ch); store.set("amp.channels", [...picked].join(",")); renderShort(); }
 });
 
 function renderCats() {
