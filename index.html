@@ -161,7 +161,14 @@
   /* posts + stories */
   .daybar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
   .daybar select { padding: 9px 12px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); min-width: 220px; }
+  .jobbox { max-width: 900px; }
+  .jobbox .note { margin: 0 0 14px; display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+  .jobbox .note.good { background: var(--ok-soft); color: var(--ok); }
+  .spin { flex: none; width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
   .doc { max-width: 900px; }
+  .doc, .jobbox, #storyDoc { overflow-wrap: anywhere; }
   .doc > p, .doc > ul { margin: 8px 0; }
   .doc h2.sec { font-size: 20px; margin: 26px 0 10px; }
   .item { padding: 18px; margin-bottom: 14px; }
@@ -248,14 +255,19 @@
   <section id="tab-posts" class="hidden">
     <div class="pagehead"><div class="eyebrow">Posting Package</div><h2>Today's posts, ready to copy</h2>
       <p>Each post has its graphic, Facebook copy, Instagram copy and tracking links. Pick a day, then copy what you need.</p></div>
-    <div class="daybar"><select id="postDay" aria-label="Day"></select><span class="meta" id="postMeta"></span></div>
+    <div class="daybar"><select id="postDay" aria-label="Day"></select>
+      <button class="btn primary" data-prepare="posts">Prepare today's package</button><span class="meta" id="postMeta"></span></div>
+    <div class="jobbox" id="postJob"></div>
     <div class="doc" id="postDoc"></div>
   </section>
 
   <section id="tab-stories" class="hidden">
     <div class="pagehead"><div class="eyebrow">Story Maker</div><h2>Instagram stories for the day</h2>
       <p>Each story has its copy, its link and its button text, in the order to post them. Pick a day, then copy each piece into Instagram.</p></div>
-    <div class="daybar"><select id="storyDay" aria-label="Day"></select><span class="meta" id="storyMeta"></span></div>
+    <div class="daybar"><select id="storyDay" aria-label="Day"></select>
+      <button class="btn primary" data-prepare="stories_lauren">Get today's stories ready for Lauren</button>
+      <button class="btn" data-prepare="stories_posting">Get today's stories ready to post</button><span class="meta" id="storyMeta"></span></div>
+    <div class="jobbox" id="storyJob"></div>
     <div id="storyDoc"></div>
   </section>
 
@@ -345,6 +357,8 @@ async function unlock(pass) {
   LINKS = amp.links; BACKEND = amp.backend || null;
   index(); renderCats(); render(); shortBox.render();
   if (BACKEND) loadRegistry().then(() => { deepBox.render(); shortBox.render(); }).catch(() => {});
+  renderJobs();
+  if (pending && BACKEND) watchJob();
 }
 function showApp() {
   $("#lock").classList.add("hidden"); $("#app").classList.remove("hidden");
@@ -405,7 +419,21 @@ async function gh(path, opt = {}) {
 }
 const repoPath = p => "/contents/" + p.split("/").map(encodeURIComponent).join("/") + `?ref=main&t=${Date.now()}`;
 async function loadRegistry() { REGISTRY = (await gh(repoPath("data/shortlinks.json"), { raw: true })).links || {}; }
-const lastRun = async () => ((await gh("/actions/workflows/shortlinks.yml/runs?per_page=1")).workflow_runs || [])[0];
+const lastRunOf = async file => ((await gh(`/actions/workflows/${file}/runs?per_page=1`)).workflow_runs || [])[0];
+const lastRun = () => lastRunOf("shortlinks.yml");
+// Start a job file in the private repo and wait for it to finish. Returns true when it succeeded.
+async function startJob(file, inputs) {
+  const before = await lastRunOf(file);
+  await gh(`/actions/workflows/${file}/dispatches`, { method: "POST", body: { ref: "main", inputs } });
+  let run = null;
+  for (let i = 0; i < 40 && !(run && run.status === "completed"); i++) {
+    await wait(3000);
+    const r = await lastRunOf(file);
+    run = r && (!before || r.id !== before.id) ? r : null;
+  }
+  if (!run || run.status !== "completed") throw new Error("timed out");
+  return run.conclusion === "success";
+}
 
 /* ---------- short links: one box used by Deep Link Finder and Short Link Maker ---------- */
 // Same naming as tools/shortlinks.py, which creates the links.
@@ -467,18 +495,9 @@ function makeShortBox(root, target) {
     if (!t || !channels.length || !s || busy) return;
     busy = true; failed = false; table();
     try {
-      const before = await lastRun();
-      await gh("/actions/workflows/shortlinks.yml/dispatches", { method: "POST", body: { ref: "main", inputs: { request: JSON.stringify(
-        { slug: s, title: t.title, url: t.url, channels }) } } });
-      let run = null;
-      for (let i = 0; i < 40 && !(run && run.status === "completed"); i++) {
-        await wait(3000);
-        const r = await lastRun();
-        run = r && (!before || r.id !== before.id) ? r : null;
-      }
-      if (!run || run.status !== "completed") throw new Error("timed out");
+      const ok = await startJob("shortlinks.yml", { request: JSON.stringify({ slug: s, title: t.title, url: t.url, channels }) });
       await loadRegistry();
-      failed = run.conclusion !== "success";
+      failed = !ok;
     } catch (err) { failed = true; }
     busy = false;
     if (root.querySelector(".short")) table();
@@ -617,7 +636,7 @@ async function loadDays(kind) {
     $(d.sel).innerHTML = days.map(x => `<option value="${x}">${dayLabel(x)}</option>`).join("");
     $(d.sel).onchange = () => loadDay(kind, $(d.sel).value);
     d.loaded = true;
-    $(d.meta).textContent = days[0] === today() ? "" : `Nothing prepared for today yet. Showing the most recent day. ${kind === "posts" ? "Packages" : "Stories"} are prepared by Adam.`;
+    $(d.meta).textContent = days[0] === today() ? "" : "Nothing prepared for today yet. Showing the most recent day.";
     loadDay(kind, days[0]);
   } catch (e) { $(d.out).innerHTML = OFFLINE; }
 }
@@ -631,6 +650,60 @@ async function loadDay(kind, day) {
     else $(d.out).innerHTML = renderStories(text);
   } catch (e) { $(d.out).innerHTML = OFFLINE; }
 }
+
+/* ---------- Prepare buttons: ask Claude (in Adam's account) to build the day's posts or stories ---------- */
+const JOBS = {
+  posts: { kind: "posts", box: "#postJob", what: "today's posting package", again: "Today's package is already prepared. Prepare it again? The new one replaces it." },
+  stories_lauren: { kind: "stories", box: "#storyJob", what: "today's stories for Lauren" },
+  stories_posting: { kind: "stories", box: "#storyJob", what: "today's stories for posting" },
+};
+let pending = null, lastResult = {};
+try { pending = JSON.parse(session.get("amp.job") || "null"); } catch {}
+function renderJobs() {
+  for (const box of ["#postJob", "#storyJob"]) {
+    const mine = pending && JOBS[pending.job].box === box, res = lastResult[box];
+    const mins = pending ? Math.floor((Date.now() - pending.start) / 60000) : 0;
+    $(box).innerHTML = mine ? `<div class="note info"><span class="spin"></span><span><b>Claude is preparing ${JOBS[pending.job].what}.</b>
+        Started ${mins < 1 ? "just now" : mins + " minute" + (mins > 1 ? "s" : "") + " ago"}. This usually takes 3 to 8 minutes.
+        You can use the other tools while you wait, but keep AMP open in this tab.</span></div>`
+      : res ? `<div class="note ${res.ok ? "good" : "bad"}"><span>${esc(res.text)}</span></div>` : "";
+  }
+  document.querySelectorAll("[data-prepare]").forEach(b => { b.disabled = !!pending || !BACKEND; });
+}
+function finishJob(ok, text) {
+  const j = JOBS[pending.job];
+  lastResult[j.box] = { ok, text };
+  pending = null; session.del("amp.job");
+  DAYS[j.kind].loaded = false;
+  renderJobs();
+  if (TAB === j.kind) loadDays(j.kind);
+}
+async function watchJob() {
+  renderJobs();
+  while (pending) {
+    await wait(15000);
+    if (!pending) break;
+    try {
+      const j = await gh(repoPath(`data/jobs/${pending.job}.json`), { raw: true });
+      if (j.date === pending.date && Date.parse(j.finished) > pending.start - 60000) { finishJob(!!j.ok, j.summary || (j.ok ? "Done." : "That didn't work. Message Adam.")); break; }
+    } catch (e) { /* not written yet */ }
+    if (Date.now() - pending.start > 25 * 60000) { finishJob(false, "This is taking much longer than usual. Check back in a few minutes, or message Adam."); break; }
+    renderJobs();
+  }
+}
+async function prepare(job) {
+  const j = JOBS[job];
+  if (pending || !BACKEND || !j) return;
+  if (j.again && [...$("#postDay").options].some(o => o.value === today()) && !confirm(j.again)) return;
+  delete lastResult[j.box];
+  pending = { job, date: today(), start: Date.now() };
+  session.set("amp.job", JSON.stringify(pending));
+  renderJobs();
+  try { if (!await startJob("prepare.yml", { job, date: pending.date })) throw new Error("failed"); }
+  catch (e) { finishJob(false, "Couldn't start that. Try again in a minute, or message Adam."); return; }
+  watchJob();
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-prepare]"); if (b) prepare(b.dataset.prepare); });
 
 // A small Markdown reader for the package file: headings, lists, bold, and copy boxes for each block of copy.
 const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>")
@@ -718,14 +791,14 @@ const HELP = {
     ["Help the next person", "Change the stars if a photo is better or worse than rated, or mark it Do Not Use."] ],
     tip: "More stars means a stronger photo. “Hide 1★ photos” is ticked to keep the weakest ones out of the way." },
   posts: { title: "Posting Package", lead: "Everything needed to publish the day's posts.", steps: [
-    ["Pick the day", "Today's package shows first when it has been prepared. Use the drop-down for another day."],
+    ["Prepare today's package", "Press the button. Claude reads the day's posts in Asana and builds the package. It takes a few minutes."],
     ["Download the graphic", "Each post shows its picture with a Download button."],
     ["Copy the words", "Press “Copy Facebook” or “Copy Instagram”, then paste into the post."],
     ["Check the notes", "“Notes” explains where the copy and links came from, and anything to watch for."] ],
     tip: "Posts under “Not ready” are missing something, usually copy or a graphic. The note says what." },
   stories: { title: "Story Maker", lead: "The day's Instagram stories, in the order to post them.", steps: [
-    ["Pick the day", "Today's stories show first when they have been prepared."],
-    ["Go top to bottom", "Stories are numbered in posting order."],
+    ["Get them ready for Lauren", "Press the first button. Claude pulls today's stories and lists them for Lauren to approve."],
+    ["Get them ready to post", "Once Lauren has approved, press the second button. Claude matches each story to its link."],
     ["Copy each piece", "Copy the words, the link for the link sticker, and the button text."],
     ["Only post approved ones", "A green “Approved by Lauren” badge means it's good to go. Yellow means still a draft."] ],
     tip: "The link goes in Instagram's link sticker. The button text is what the sticker should say." },
