@@ -61,7 +61,7 @@
     box-shadow: var(--shadow); overflow: hidden; }
   .lockbox .strip { height: 5px; background: var(--rainbow); }
   .lockbox .in { padding: 28px 26px 26px; }
-  .lockbox .mark { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .lockbox .mark { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
   .lockbox .mark img { width: 44px; height: 44px; border-radius: 8px; }
   .lockbox h1 { font-size: 30px; font-weight: 600; letter-spacing: .5px; }
   .lockbox .sub { color: var(--muted); font-size: 14px; }
@@ -81,7 +81,7 @@
   header::after { content: ""; display: block; height: 4px; background: var(--rainbow); }
   .bar { max-width: 1400px; margin: 0 auto; padding: 0 16px; display: flex; gap: 18px; align-items: center; min-height: 56px; }
   .brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; cursor: pointer; }
-  .brand img { width: 30px; height: 30px; border-radius: 6px; }
+  .jmark { width: 30px; height: 30px; border-radius: 6px; align-self: center; }
   .brand b { font-size: 21px; font-weight: 600; letter-spacing: .5px; }
   .brand small { font-size: 12px; color: var(--muted); line-height: 1.15; text-align: left; }
   nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; align-self: stretch; flex: 1; }
@@ -90,7 +90,7 @@
     cursor: pointer; color: var(--text); white-space: nowrap; font-weight: 500; font-size: 15px; }
   nav button:hover { color: var(--accent); }
   nav button.on { color: var(--accent); border-bottom-color: var(--teal); }
-  .tools { display: flex; gap: 8px; }
+  .tools { display: flex; gap: 8px; align-items: center; }
   @media (max-width: 1180px) { .brand small { display: none; } .bar { gap: 10px; flex-wrap: wrap; padding-top: 8px; }
     nav { order: 3; flex-basis: 100%; min-height: 42px; margin: 0 -16px; padding: 0 8px; } .tools { margin-left: auto; } }
 
@@ -117,7 +117,7 @@
   .hero { text-align: center; padding: 26px 0 30px; }
   .hero .eyebrow { justify-content: center; }
   .hero h1 { font-size: clamp(40px, 7vw, 68px); margin: 14px 0 0; }
-  .hero h1 span { color: var(--teal); }
+  .hero h1 span, .a { color: #01a3b2; }
   .hero .tag { font-size: 20px; margin: 6px 0 12px; }
   .hero p { color: var(--muted); max-width: 640px; margin: 0 auto; }
   .apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
@@ -155,12 +155,13 @@
   .panel h3, .lab { display: block; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin: 18px 0 6px; }
   .url { display: flex; gap: 6px; }
   .url input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); font-size: 14px; }
-  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
-  .cols label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+  .formats { padding: 2px 0 0; }
+  .formats .chip { padding: 6px 14px; font-size: 15px; }
+  .formats .chip.on::before { content: "✓ "; }
   .panel input[type=text], .panel input[type=url] { width: 100%; padding: 9px 11px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); }
   .short { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
   .short td { padding: 6px 0; border-top: 1px solid var(--line); vertical-align: middle; }
-  .short td:first-child { color: var(--muted); width: 88px; }
+  .short td:first-child { color: var(--muted); width: 96px; overflow-wrap: anywhere; }
   .short code { font: 13px ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
 
   /* posts + stories */
@@ -229,7 +230,7 @@
   <form class="lockbox" id="lockForm">
     <div class="strip"></div>
     <div class="in">
-      <div class="mark"><img data-logo alt=""><div><h1>AMP</h1><div class="sub">Automated Marketing Platform</div></div></div>
+      <div class="mark"><div><h1><span class="a">A</span>MP</h1><div class="sub">Automated Marketing Platform</div></div><img data-logo alt="Miles Nadal JCC"></div>
       <p>The MNjcc marketing team's tools in one place. Enter the team passcode to continue.</p>
       <div class="passrow"><input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
         <button type="button" id="showPass" aria-pressed="false" aria-controls="pass">Show</button></div>
@@ -243,7 +244,7 @@
 <div id="app" class="hidden">
 <header>
   <div class="bar">
-    <button class="brand" data-tab="home" title="Home"><img data-logo alt=""><b>AMP</b><small>Automated<br>Marketing Platform</small></button>
+    <button class="brand" data-tab="home" title="Home"><b><span class="a">A</span>MP</b><small>Automated<br>Marketing Platform</small></button>
     <nav id="tabs">
       <button data-tab="home">Home</button>
       <button data-tab="photos">Photo Finder</button>
@@ -254,6 +255,7 @@
       <button data-tab="chat">Ask Claude</button>
     </nav>
     <div class="tools">
+      <img class="jmark" data-logo alt="Miles Nadal JCC" title="Miles Nadal JCC">
       <button class="btn small" id="helpBtn">? Help</button>
       <button class="btn small" id="lockBtn" title="Forget the passcode on this device">Lock</button>
     </div>
@@ -279,6 +281,8 @@
       <p>Each post has its graphic, Facebook copy, Instagram copy and tracking links. Pick a day, then copy what you need.</p></div>
     <div class="daybar"><select id="postDay" aria-label="Day"></select>
       <button class="btn primary" data-prepare="posts">Prepare today's package</button>
+      <a class="btn" href="https://app.sproutsocial.com/publishing/" target="_blank" rel="noopener">Open Sprout ↗</a>
+      <a class="btn" data-insta="app" target="_blank" rel="noopener">Open Instagram ↗</a>
       <button class="btn" data-prepare="posts_posted">Mark today's posts as posted</button><span class="meta" id="postMeta"></span></div>
     <div class="jobbox" id="postJob"></div>
     <div class="doc" id="postDoc"></div>
@@ -290,6 +294,7 @@
     <div class="daybar"><select id="storyDay" aria-label="Day"></select>
       <button class="btn primary" data-prepare="stories_lauren">Get today's stories ready for Lauren</button>
       <button class="btn" data-prepare="stories_posting">Get today's stories ready to post</button>
+      <a class="btn" data-insta="story-camera" target="_blank" rel="noopener">Open Instagram ↗</a>
       <button class="btn" data-prepare="stories_posted">Mark today's stories as posted</button><span class="meta" id="storyMeta"></span></div>
     <div class="jobbox" id="storyJob"></div>
     <div id="storyDoc"></div>
@@ -372,8 +377,8 @@ const APPS = [
   { id: "posts", name: "Posting Package", c: "var(--purple)", text: "The day's social posts: each graphic with its Facebook and Instagram copy and tracking links, ready to copy." },
   { id: "stories", name: "Story Maker", c: "var(--orange)", text: "The day's Instagram stories in posting order: copy, link and button text for each one." },
   { id: "links", name: "Deep Link Finder", c: "var(--blue)", text: "Find the registration link for any program, course or session, and make a short link for each place you'll use it." },
-  { id: "chat", name: "Ask Claude", c: "var(--accent)", text: "Tell Claude in plain words what needs fixing: a story that was missed, wording to change, a post to add. It does the work and replies." },
   { id: "short", name: "Short Link Maker", c: "var(--green)", text: "Turn any web address into short mnjcc.s.gy links that show whether people came from Instagram, Facebook, Yodeck or a flyer." },
+  { id: "chat", name: "Ask Claude", c: "var(--accent)", text: "Tell Claude in plain words what needs fixing: a story that was missed, wording to change, a post to add. It does the work and replies." },
 ];
 $("#apps").innerHTML = APPS.map(a => `<button class="card app" style="--c:${a.c}" data-tab="${a.id}">
   <span class="ico">${svg(a.id)}</span><h3>${a.name}</h3><p>${a.text}</p><span class="go">Open ${a.name} →</span></button>`).join("");
@@ -448,6 +453,12 @@ document.addEventListener("click", e => {
   const b = e.target.closest("[data-tab]"); if (b) showTab(b.dataset.tab);
   const c = e.target.closest("[data-copy]"); if (c) copyText(c, COPIES[+c.dataset.copy]);
 });
+// On a phone these open the Instagram app (stories go straight to the story camera); on a computer, the website.
+const ON_PHONE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+document.querySelectorAll("[data-insta]").forEach(a => {
+  a.href = ON_PHONE ? "instagram://" + a.dataset.insta : "https://www.instagram.com/";
+  if (ON_PHONE) a.removeAttribute("target");
+});
 const COPIES = [];
 const copyBtn = (text, label = "Copy") => `<button class="btn small" data-copy="${COPIES.push(text) - 1}">${label}</button>`;
 async function copyText(btn, text) {
@@ -485,14 +496,23 @@ async function startJob(file, inputs) {
 /* ---------- short links: one box used by Deep Link Finder and Short Link Maker ---------- */
 // Same naming as tools/shortlinks.py, which creates the links.
 const CHANNELS = [
-  { id: "yodeck", label: "Yodeck", suffix: "yodeck" },
   { id: "instagram", label: "Instagram", suffix: "ig" },
   { id: "facebook", label: "Facebook", suffix: "fb" },
   { id: "linkedin", label: "LinkedIn", suffix: "li" },
-  { id: "flyer", label: "Flyer / print", suffix: "flyer" },
+  { id: "yodeck", label: "Yodeck", suffix: "yodeck" },
+  { id: "flyer", label: "Flyer", suffix: "flyer" },
+  { id: "postcard", label: "Postcard", suffix: "postcard" },
+  { id: "newsletter", label: "Newsletter", suffix: "newsletter" },
+  { id: "meta-ads", label: "Meta Ads", suffix: "meta-ads" },
+  { id: "a-frame", label: "A-Frame", suffix: "a-frame" },
+  { id: "other", label: "Other" },
 ];
 const SHORT_DOMAIN = "mnjcc.s.gy";
-const picked = new Set((store.get("amp.channels") || "yodeck,instagram,facebook,linkedin").split(",").filter(Boolean));
+const picked = new Set((store.get("amp.channels") || "instagram,facebook").split(",").filter(c => CHANNELS.some(x => x.id === c)));
+let otherName = store.get("amp.other") || "";
+// The formats that are switched on, with "Other" turned into whatever the person typed.
+const activeFormats = () => CHANNELS.filter(ch => picked.has(ch.id)).map(ch => ch.id !== "other" ? { ...ch, send: ch.id }
+  : { id: "other", label: otherName.trim() || "Other", suffix: slugify(otherName).slice(0, 24), send: "other:" + slugify(otherName).slice(0, 24) });
 const slugify = s => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/&/g, " and ")
   .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").split("-").reduce((a, w) => (a + "-" + w).length <= 33 || !a ? (a ? a + "-" + w : w) : a + "\u0000", "").split("\u0000")[0].slice(0, 40);
 const sameDest = (a, b) => a.replace(/\/$/, "") === b.replace(/\/$/, "");
@@ -506,8 +526,9 @@ function makeShortBox(root, target) {
     if (t.title !== lastTitle) { lastTitle = t.title; touched = false; }
     if (!touched) slug = slugify(t.title);
     root.innerHTML = `
-      <h3>Where will it be used?</h3>
-      <div class="cols">${CHANNELS.map(ch => `<label><input type="checkbox" data-ch="${ch.id}" ${picked.has(ch.id) ? "checked" : ""}> ${ch.label}</label>`).join("")}</div>
+      <h3>What formats is it for?</h3>
+      <div class="chips formats">${CHANNELS.map(ch => `<button type="button" class="chip${picked.has(ch.id) ? " on" : ""}" data-ch="${ch.id}" aria-pressed="${picked.has(ch.id)}">${ch.label}</button>`).join("")}</div>
+      <input type="text" data-other class="${picked.has("other") ? "" : "hidden"}" value="${esc(otherName)}" maxlength="30" placeholder="Other: please specify, e.g. Lobby TV" aria-label="Other format: please specify" style="margin-top:6px">
       <h3>Short link name</h3>
       <input type="text" data-slug value="${esc(slug)}" maxlength="40" spellcheck="false" aria-label="Short link name">
       <table class="short"></table>
@@ -518,21 +539,22 @@ function makeShortBox(root, target) {
   function table() {
     const t = target(); if (!t) return;
     const s = slugify(slug);
-    const rows = CHANNELS.filter(ch => picked.has(ch.id)).map(ch => {
+    const formats = activeFormats(), needOther = formats.some(f => f.id === "other" && !f.suffix);
+    const rows = formats.filter(f => f.suffix).map(ch => {
       const path = `${s}-${ch.suffix}`, r = REGISTRY[path];
       const clash = r && (r.status === "conflict" || !sameDest(r.url, t.url));
       let state = `<span class="badge off">Not made yet</span>`;
       if (r && !clash && r.short) state = `<span class="badge ok">Ready</span> ${copyBtn(r.short)}`;
       else if (clash) state = `<span class="badge wait">Name taken</span>`;
-      return { id: ch.id, missing: !(r && !clash && r.short), clash: !!clash,
+      return { id: ch.send, missing: !(r && !clash && r.short), clash: !!clash,
         html: `<tr><td>${ch.label}</td><td><code>${esc(`${SHORT_DOMAIN}/${path}`)}</code></td><td style="text-align:right">${state}</td></tr>` };
     });
     root.querySelector(".short").innerHTML = rows.map(r => r.html).join("");
     const todo = rows.filter(r => r.missing && !r.clash), clash = rows.some(r => r.clash), go = root.querySelector("[data-go]");
     go.dataset.channels = todo.map(r => r.id).join(",");
-    go.textContent = busy ? "Making your links…" : !rows.length ? "Tick at least one place" : !s ? "Add a short link name"
+    go.textContent = busy ? "Making your links…" : needOther ? "Say what the other format is" : !rows.length ? "Pick at least one format" : !s ? "Add a short link name"
       : todo.length ? `Generate ${todo.length} short link${todo.length > 1 ? "s" : ""}` : "All short links are ready";
-    go.disabled = busy || !rows.length || !s || !todo.length || !BACKEND;
+    go.disabled = busy || needOther || !rows.length || !s || !todo.length || !BACKEND;
     root.querySelector("[data-note]").innerHTML = busy ? `<div class="note info">Making your links. This takes about 20 seconds; stay on this page.<div class="prog auto" role="progressbar" aria-label="Estimated progress"><i></i></div></div>`
       : failed ? `<div class="note bad">That didn't work. Try again in a minute, or message Adam.</div>`
       : clash ? `<div class="note bad">A short link with this name already points somewhere else. Change the short link name.</div>` : "";
@@ -549,11 +571,21 @@ function makeShortBox(root, target) {
     busy = false;
     if (root.querySelector(".short")) table();
   }
-  root.addEventListener("click", e => { if (e.target.closest("[data-go]")) generate(); });
+  root.addEventListener("click", e => {
+    if (e.target.closest("[data-go]")) generate();
+    const c = e.target.closest("[data-ch]");
+    if (c) {
+      picked.has(c.dataset.ch) ? picked.delete(c.dataset.ch) : picked.add(c.dataset.ch);
+      store.set("amp.channels", [...picked].join(","));
+      c.classList.toggle("on", picked.has(c.dataset.ch)); c.setAttribute("aria-pressed", picked.has(c.dataset.ch));
+      const o = root.querySelector("[data-other]"); o.classList.toggle("hidden", !picked.has("other"));
+      if (c.dataset.ch === "other" && picked.has("other")) o.focus();
+      table();
+    }
+  });
   root.addEventListener("input", e => {
     if (e.target.matches("[data-slug]")) { slug = e.target.value; touched = true; table(); }
-    if (e.target.dataset.ch) { e.target.checked ? picked.add(e.target.dataset.ch) : picked.delete(e.target.dataset.ch);
-      store.set("amp.channels", [...picked].join(",")); table(); }
+    if (e.target.matches("[data-other]")) { otherName = e.target.value; store.set("amp.other", otherName); table(); }
   });
   return { render };
 }
@@ -741,7 +773,7 @@ function renderJobs() {
         You can use the other tools while you wait, but keep AMP open in this tab.
         <div class="prog" role="progressbar" aria-label="Estimated progress"><i data-jobbar style="width:${g.pct}%"></i></div>
         <div class="progline"><span data-jobstage>${g.stage}</span><span data-jobleft>${g.left}</span></div></div>`
-      : res ? `<div class="note ${res.ok ? "good" : "bad"}"><span>${esc(res.text)}</span></div>` : "";
+      : res ? `<div class="note ${res.ok ? "good" : "bad"}"><span>${esc(res.text)}</span>${res.ok && res.next ? `<div style="margin-top:8px">${res.next}</div>` : ""}</div>` : "";
   }
   document.querySelectorAll("[data-prepare], #chatSend").forEach(b => { b.disabled = !!pending || !BACKEND; });
 }
@@ -749,7 +781,7 @@ function finishJob(ok, text) {
   const job = pending.job, j = JOBS[job];
   pending = null; session.del("amp.job");
   if (job === "chat") { say("claude", text, ok); DAYS.posts.loaded = DAYS.stories.loaded = false; }
-  else { lastResult[j.box] = { ok, text }; DAYS[j.kind].loaded = false; if (TAB === j.kind) loadDays(j.kind); }
+  else { lastResult[j.box] = { ok, text, next: job === "posts" ? `Next: <a href="https://app.sproutsocial.com/publishing/" target="_blank" rel="noopener">open Sprout to schedule the posts ↗</a>` : "" }; DAYS[j.kind].loaded = false; if (TAB === j.kind) loadDays(j.kind); }
   renderJobs();
 }
 async function watchJob() {
@@ -917,7 +949,7 @@ const HELP = {
   links: { title: "Deep Link Finder", lead: "Get a registration link that opens the exact program.", steps: [
     ["Search for the program", "Type part of its name, a category or a date."],
     ["Press the link you want", "Session link is usually right: it opens one class or series. Program link opens the whole program page; Option link opens one date."],
-    ["Tick where it will be used", "Yodeck, Instagram, Facebook, LinkedIn or a flyer. Each place gets its own short link."],
+    ["Pick the formats", "Tap each format it's for: Instagram, Facebook, Yodeck, a flyer and so on. Each one gets its own short link. Use Other for anything not listed."],
     ["Press Generate, then Copy", "It takes about 20 seconds. Links that already exist show as Ready straight away."] ],
     tip: "A yellow “Opens …” badge means registration hasn't started. The link will work from that date." },
   chat: { title: "Ask Claude", lead: "Ask for a fix the way you'd ask a teammate.", steps: [
@@ -929,7 +961,7 @@ const HELP = {
   short: { title: "Short Link Maker", lead: "Short links for any web page that isn't a registration page.", steps: [
     ["Paste the web address", "The full address, starting with https://"],
     ["Say what it's for", "A few words, like “Chanukah party tickets”. This names the short link."],
-    ["Tick where it will be used", "Each place gets its own link, so you can see which one people clicked."],
+    ["Pick the formats", "Tap each format it's for. Each one gets its own link, so you can see which one people clicked. Use Other for anything not listed."],
     ["Press Generate, then Copy", "It takes about 20 seconds."] ],
     tip: "For program registration, use Deep Link Finder instead. It finds the address for you." },
 };
