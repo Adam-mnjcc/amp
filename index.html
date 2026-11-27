@@ -66,7 +66,12 @@
   .lockbox h1 { font-size: 30px; font-weight: 600; letter-spacing: .5px; }
   .lockbox .sub { color: var(--muted); font-size: 14px; }
   .lockbox p { margin: 0 0 16px; color: var(--muted); }
-  .lockbox input[type=password] { width: 100%; padding: 12px 13px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); }
+  .lockbox #pass { width: 100%; color: var(--text); padding: 12px 13px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); }
+  .passrow { position: relative; }
+  .passrow input { padding-right: 68px !important; }
+  #showPass { position: absolute; right: 4px; top: 4px; bottom: 4px; padding: 0 12px; border: 0; border-radius: var(--r); background: none;
+    color: var(--accent); font-weight: 500; font-size: 14px; cursor: pointer; }
+  #showPass:hover { background: var(--accent-soft); }
   .lockbox label { display: flex; gap: 8px; align-items: center; margin: 12px 0 2px; color: var(--muted); font-size: 14px; }
   #lockMsg { margin-top: 12px; font-size: 14px; min-height: 20px; color: var(--muted); }
   #lockMsg.bad { color: var(--bad); }
@@ -215,7 +220,8 @@
     <div class="in">
       <div class="mark"><img data-logo alt=""><div><h1>AMP</h1><div class="sub">Automated Marketing Platform</div></div></div>
       <p>The MNjcc marketing team's tools in one place. Enter the team passcode to continue.</p>
-      <input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
+      <div class="passrow"><input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
+        <button type="button" id="showPass" aria-pressed="false" aria-controls="pass">Show</button></div>
       <label><input type="checkbox" id="remember" checked> Remember on this device</label>
       <button class="btn primary wide" id="unlock" type="submit">Open</button>
       <div id="lockMsg"></div>
@@ -383,6 +389,13 @@ $("#lockForm").addEventListener("submit", async e => {
     msg.textContent = err.message === "wrong" ? "That passcode didn't work. Check it and try again." : "Couldn't open AMP. Check your internet and try again.";
   }
   $("#unlock").disabled = false;
+});
+$("#showPass").addEventListener("click", () => {
+  const show = $("#pass").type === "password";
+  $("#pass").type = show ? "text" : "password";
+  $("#showPass").textContent = show ? "Hide" : "Show";
+  $("#showPass").setAttribute("aria-pressed", show);
+  $("#pass").focus();
 });
 $("#lockBtn").addEventListener("click", () => { store.del(PASS_KEY); session.del(SESSION_PASS); location.reload(); });
 // Old Photo Finder bookmarks (…/#q=swimming) keep working: the search is passed on to the Photo Finder tab.
