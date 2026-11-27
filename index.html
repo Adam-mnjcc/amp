@@ -957,7 +957,24 @@ function renderStories(md) {
   }).filter(s => Object.keys(s.f).length);
   if (!stories.length) return `<div class="empty">No stories are listed for this day.</div>`;
   const posted = /posted/i.test(status) && !/ready/i.test(status);
+  const forLauren = !posted && !/ready/i.test(status);
+  // The message for Lauren: the file's "Block for Lauren", or built from each story's title, copy and button text.
+  const section = t => (parts.find(p => p.toLowerCase().startsWith(t)) || "").split("\n").slice(1).join("\n").trim();
+  const block = (section("block for lauren").match(/```[^\n]*\n([\s\S]*?)```/) || [])[1];
+  const bold = t => [...t].map(c => /[A-Z]/.test(c) ? String.fromCodePoint(0x1D5D4 + c.charCodeAt(0) - 65) : /[a-z]/.test(c) ? String.fromCodePoint(0x1D5EE + c.charCodeAt(0) - 97)
+    : /[0-9]/.test(c) ? String.fromCodePoint(0x1D7EC + c.charCodeAt(0) - 48) : c).join("");
+  const message = (block || stories.map(s => {
+    const copy = s.f["approved copy"] || s.f["draft copy"] || "", cta = s.f["approved cta"] || s.f["draft cta"] || "";
+    return [bold(s.name), copy, /^none\b/i.test(cta) ? "" : cta].filter(Boolean).join("\n");
+  }).join("\n\n")).trim();
+  const waiting = section("waiting for adam"), postNotes = section("block for lauren").replace(/```[\s\S]*?```/g, "").trim();
+  const laurenBox = `<div class="card item" style="max-width:900px"><h3>Message for Lauren</h3>
+      <p class="meta">Every story for the day, approved ones too. Press Copy, then paste it to Lauren in Teams.</p>
+      <div class="copybox"><div class="copyhead"><span>For Lauren</span>${copyBtn(message, "Copy all")}</div><pre>${esc(message)}</pre></div>
+      ${waiting ? `<div class="note wait">${waiting.split("\n").filter(l => l.trim()).map(l => `<p>${inline(l)}</p>`).join("")}</div>` : ""}
+      ${postNotes ? `<p class="meta">${inline(postNotes)}</p>` : ""}</div>`;
   return `<div class="meta"><span class="badge ${posted ? "off" : /ready/i.test(status) ? "ok" : "wait"}">${esc((status || "In progress").replace(/^./, c => c.toUpperCase()))}</span> · ${stories.length} stor${stories.length > 1 ? "ies" : "y"}, in posting order</div>
+    ${forLauren ? laurenBox + `<details style="margin-top:16px"><summary>Each story on its own (with links)</summary>` : ""}
     <div class="stories">${stories.map((s, n) => {
       const copy = (s.f["approved copy"] || s.f["draft copy"] || "").replace(/\s+\/\s+/g, "\n"), cta = s.f["approved cta"] || s.f["draft cta"] || "";
       const approved = !!(s.f["approved copy"] || s.f["approved cta"]);
@@ -969,7 +986,7 @@ function renderStories(md) {
         ${box("Copy", copy)}${box("Link", link)}${box("Button text", cta)}
         ${!link ? `<div class="note info">${esc(s.f.link || "No link for this story.")}</div>` : ""}
         ${extra.length ? `<details><summary>More details</summary><dl class="kv">${extra.map(([k, v]) => `<dt>${esc(k[0].toUpperCase() + k.slice(1))}</dt><dd>${inline(v)}</dd>`).join("")}</dl></details>` : ""}</div>`;
-    }).join("")}</div>
+    }).join("")}</div>${forLauren ? "</details>" : ""}
     ${notes.length ? `<details style="max-width:900px;margin-top:16px"><summary>Notes for this day</summary>${notes.map(n => `<p class="meta">${inline(n)}</p>`).join("")}</details>` : ""}`;
 }
 
@@ -993,7 +1010,7 @@ const HELP = {
     ["Mark them as posted", "Once the posts have gone out, press “Mark today's posts as posted”. That completes them in Asana."] ],
     tip: "Posts under “Not ready” are missing something, usually copy or a graphic. The note says what." },
   stories: { title: "Story Maker", lead: "The day's Instagram stories, in the order to post them.", steps: [
-    ["Get them ready for Lauren", "Press the first button. Claude pulls today's stories and lists them for Lauren to approve."],
+    ["Get them ready for Lauren", "Press the first button. Claude pulls today's stories into one message for Lauren: press “Copy all” and paste it to her in Teams."],
     ["Get them ready to post", "Once Lauren has approved, press the second button. Claude matches each story to its link."],
     ["Copy each piece", "Copy the words, the link for the link sticker, and the button text."],
     ["Post, then mark as posted", "Only post stories with the green “Approved by Lauren” badge. When they're up, press “Mark today's stories as posted”."] ],
