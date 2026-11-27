@@ -198,6 +198,17 @@
   .stories { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
   .stories .item { margin: 0; }
 
+  /* ask claude */
+  .chat { max-width: 760px; }
+  #chatLog { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .msg { max-width: 88%; padding: 10px 14px; border-radius: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.me { align-self: flex-end; background: var(--accent); color: var(--accent-text); border-bottom-right-radius: 4px; }
+  .msg.claude { align-self: flex-start; background: var(--card); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .msg.claude.bad { border-color: var(--bad); }
+  .msg small { display: block; opacity: .7; font-size: 12px; margin-bottom: 2px; }
+  #chatForm { display: flex; gap: 8px; align-items: flex-end; }
+  #chatText { flex: 1; padding: 11px 13px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); resize: vertical; min-height: 48px; }
+
   /* help */
   #help { position: fixed; inset: 0; z-index: 20; background: rgba(10,20,25,.55); display: grid; place-items: center; padding: 16px; }
   .helpbox { background: var(--card); border-radius: var(--r-lg); width: 100%; max-width: 620px; max-height: 92vh; overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
@@ -240,6 +251,7 @@
       <button data-tab="stories">Story Maker</button>
       <button data-tab="links">Deep Link Finder</button>
       <button data-tab="short">Short Link Maker</button>
+      <button data-tab="chat">Ask Claude</button>
     </nav>
     <div class="tools">
       <button class="btn small" id="helpBtn">? Help</button>
@@ -266,7 +278,8 @@
     <div class="pagehead"><div class="eyebrow">Posting Package</div><h2>Today's posts, ready to copy</h2>
       <p>Each post has its graphic, Facebook copy, Instagram copy and tracking links. Pick a day, then copy what you need.</p></div>
     <div class="daybar"><select id="postDay" aria-label="Day"></select>
-      <button class="btn primary" data-prepare="posts">Prepare today's package</button><span class="meta" id="postMeta"></span></div>
+      <button class="btn primary" data-prepare="posts">Prepare today's package</button>
+      <button class="btn" data-prepare="posts_posted">Mark today's posts as posted</button><span class="meta" id="postMeta"></span></div>
     <div class="jobbox" id="postJob"></div>
     <div class="doc" id="postDoc"></div>
   </section>
@@ -276,7 +289,8 @@
       <p>Each story has its copy, its link and its button text, in the order to post them. Pick a day, then copy each piece into Instagram.</p></div>
     <div class="daybar"><select id="storyDay" aria-label="Day"></select>
       <button class="btn primary" data-prepare="stories_lauren">Get today's stories ready for Lauren</button>
-      <button class="btn" data-prepare="stories_posting">Get today's stories ready to post</button><span class="meta" id="storyMeta"></span></div>
+      <button class="btn" data-prepare="stories_posting">Get today's stories ready to post</button>
+      <button class="btn" data-prepare="stories_posted">Mark today's stories as posted</button><span class="meta" id="storyMeta"></span></div>
     <div class="jobbox" id="storyJob"></div>
     <div id="storyDoc"></div>
   </section>
@@ -305,6 +319,19 @@
       <label class="lab" for="sTitle">What is it for?</label>
       <input type="text" id="sTitle" placeholder="e.g. Chanukah party tickets" maxlength="80">
       <div id="sBox"></div>
+    </div>
+  </section>
+  <section id="tab-chat" class="hidden">
+    <div class="pagehead"><div class="eyebrow">Ask Claude</div><h2>Tell Claude what needs fixing</h2>
+      <p>Type it the way you'd say it to a teammate. Claude can fix or add to today's posts and stories, and explain why something isn't ready.
+        Each request takes a minute or two.</p></div>
+    <div class="chat">
+      <div id="chatLog" aria-live="polite"></div>
+      <div class="jobbox" id="chatJob"></div>
+      <div class="chips" id="chatIdeas"></div>
+      <form id="chatForm"><textarea id="chatText" rows="2" maxlength="1500" placeholder="e.g. You forgot the Chanukah party story today"></textarea>
+        <button class="btn primary" type="submit" id="chatSend">Send</button></form>
+      <button class="more" id="chatClear" type="button">Clear this conversation</button>
     </div>
   </section>
 </main>
@@ -336,6 +363,7 @@ const ICON = {
   posts: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
   stories: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>',
   links: '<circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/>',
+  chat: '<path d="M5 5h14v10H10l-4 4v-4H5z"/>',
   short: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
 };
 const svg = k => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
@@ -344,6 +372,7 @@ const APPS = [
   { id: "posts", name: "Posting Package", c: "var(--purple)", text: "The day's social posts: each graphic with its Facebook and Instagram copy and tracking links, ready to copy." },
   { id: "stories", name: "Story Maker", c: "var(--orange)", text: "The day's Instagram stories in posting order: copy, link and button text for each one." },
   { id: "links", name: "Deep Link Finder", c: "var(--blue)", text: "Find the registration link for any program, course or session, and make a short link for each place you'll use it." },
+  { id: "chat", name: "Ask Claude", c: "var(--accent)", text: "Tell Claude in plain words what needs fixing: a story that was missed, wording to change, a post to add. It does the work and replies." },
   { id: "short", name: "Short Link Maker", c: "var(--green)", text: "Turn any web address into short mnjcc.s.gy links that show whether people came from Instagram, Facebook, Yodeck or a flyer." },
 ];
 $("#apps").innerHTML = APPS.map(a => `<button class="card app" style="--c:${a.c}" data-tab="${a.id}">
@@ -412,6 +441,7 @@ function showTab(name) {
   if (name === "photos" && !$("#photoFrame").getAttribute("src")) $("#photoFrame").src = "photos.html" + PHOTO_HASH;
   if (name === "posts") loadDays("posts");
   if (name === "stories") loadDays("stories");
+  if (name === "chat") { renderChat(); renderJobs(); }
   if (name !== "photos") window.scrollTo(0, 0);
 }
 document.addEventListener("click", e => {
@@ -668,22 +698,28 @@ async function loadDay(kind, day) {
   } catch (e) { $(d.out).innerHTML = OFFLINE; }
 }
 
-/* ---------- Prepare buttons: ask Claude (in Adam's account) to build the day's posts or stories ---------- */
+/* ---------- Asking Claude (in Adam's account) to do work: the buttons and the chat ---------- */
+const POSTED = "Only do this once they have actually gone out. It marks them complete in Asana. Continue?";
 const JOBS = {
-  posts: { kind: "posts", box: "#postJob", what: "today's posting package", again: "Today's package is already prepared. Prepare it again? The new one replaces it." },
-  stories_lauren: { kind: "stories", box: "#storyJob", what: "today's stories for Lauren" },
-  stories_posting: { kind: "stories", box: "#storyJob", what: "today's stories for posting" },
+  posts: { kind: "posts", box: "#postJob", doing: "Claude is preparing today's posting package", usual: 240,
+    ask: () => [...$("#postDay").options].some(o => o.value === today()) ? "Today's package is already prepared. Prepare it again? Claude keeps it if nothing has changed." : "" },
+  posts_posted: { kind: "posts", box: "#postJob", doing: "Claude is marking today's posts as posted in Asana", usual: 90, ask: () => "Mark today's ready posts as posted? " + POSTED },
+  stories_lauren: { kind: "stories", box: "#storyJob", doing: "Claude is getting today's stories ready for Lauren", usual: 180 },
+  stories_posting: { kind: "stories", box: "#storyJob", doing: "Claude is getting today's stories ready to post", usual: 150 },
+  stories_posted: { kind: "stories", box: "#storyJob", doing: "Claude is marking today's stories as posted in Asana", usual: 120, ask: () => "Mark today's stories as posted? " + POSTED },
+  chat: { box: "#chatJob", doing: "Claude is working on your request", usual: 120 },
 };
 let pending = null, lastResult = {};
-// Each device can ask Claude for work 50 times a day (Prepare buttons now, chat later). Counted in this browser.
+try { pending = JSON.parse(session.get("amp.job") || "null"); if (pending && !JOBS[pending.job]) pending = null; } catch {}
+// Each device can ask Claude for work 50 times a day (buttons and chat together). Counted in this browser.
 const DAILY_LIMIT = 50, usedKey = () => "amp.used." + today();
 const usedToday = () => +(store.get(usedKey()) || 0);
-try { pending = JSON.parse(session.get("amp.job") || "null"); } catch {}
+const LIMIT_TEXT = `You've reached today's limit of ${DAILY_LIMIT} requests to Claude on this device. It resets tomorrow. If you need more today, message Adam.`;
+
 // There is no live signal from Claude while it works, so the bar is an estimate from the usual time for each job.
-const TYPICAL = { posts: 240, stories_lauren: 180, stories_posting: 150 };
-const STAGES = [[0, "Starting up"], [12, "Reading today's tasks in Asana"], [40, "Putting the copy, graphics and links together"], [80, "Checking and saving"]];
+const STAGES = [[0, "Starting up"], [12, "Reading Asana and today's files"], [40, "Doing the work"], [80, "Checking and saving"]];
 function jobProgress() {
-  const secs = (Date.now() - pending.start) / 1000, usual = TYPICAL[pending.job] || 200;
+  const secs = (Date.now() - pending.start) / 1000, usual = JOBS[pending.job].usual;
   const pct = Math.min(96, 100 * (1 - Math.exp(-2.3 * secs / usual)));
   const stage = STAGES.filter(x => pct >= x[0]).pop()[1];
   const left = Math.ceil((usual - secs) / 60);
@@ -698,53 +734,88 @@ function tickJob() {
 }
 setInterval(tickJob, 1000);
 function renderJobs() {
-  for (const box of ["#postJob", "#storyJob"]) {
+  for (const box of ["#postJob", "#storyJob", "#chatJob"]) {
     const mine = pending && JOBS[pending.job].box === box, res = lastResult[box];
     const g = mine ? jobProgress() : null;
-    $(box).innerHTML = mine ? `<div class="note info"><b>Claude is preparing ${JOBS[pending.job].what}.</b>
+    $(box).innerHTML = mine ? `<div class="note info"><b>${JOBS[pending.job].doing}.</b>
         You can use the other tools while you wait, but keep AMP open in this tab.
         <div class="prog" role="progressbar" aria-label="Estimated progress"><i data-jobbar style="width:${g.pct}%"></i></div>
         <div class="progline"><span data-jobstage>${g.stage}</span><span data-jobleft>${g.left}</span></div></div>`
       : res ? `<div class="note ${res.ok ? "good" : "bad"}"><span>${esc(res.text)}</span></div>` : "";
   }
-  document.querySelectorAll("[data-prepare]").forEach(b => { b.disabled = !!pending || !BACKEND; });
+  document.querySelectorAll("[data-prepare], #chatSend").forEach(b => { b.disabled = !!pending || !BACKEND; });
 }
 function finishJob(ok, text) {
-  const j = JOBS[pending.job];
-  lastResult[j.box] = { ok, text };
+  const job = pending.job, j = JOBS[job];
   pending = null; session.del("amp.job");
-  DAYS[j.kind].loaded = false;
+  if (job === "chat") { say("claude", text, ok); DAYS.posts.loaded = DAYS.stories.loaded = false; }
+  else { lastResult[j.box] = { ok, text }; DAYS[j.kind].loaded = false; if (TAB === j.kind) loadDays(j.kind); }
   renderJobs();
-  if (TAB === j.kind) loadDays(j.kind);
 }
 async function watchJob() {
   renderJobs();
   while (pending) {
-    await wait(15000);
+    await wait(pending.job === "chat" ? 8000 : 15000);
     if (!pending) break;
     try {
-      const j = await gh(repoPath(`data/jobs/${pending.job}.json`), { raw: true });
-      if (j.date === pending.date && Date.parse(j.finished) > pending.start - 60000) { finishJob(!!j.ok, j.summary || (j.ok ? "Done." : "That didn't work. Message Adam.")); break; }
+      const j = await gh(repoPath(`data/jobs/${pending.job === "chat" ? "chat-" + pending.id : pending.job}.json`), { raw: true });
+      if (pending.job === "chat" || (j.date === pending.date && Date.parse(j.finished) > pending.start - 60000)) {
+        finishJob(!!j.ok, j.summary || (j.ok ? "Done." : "That didn't work. Message Adam.")); break; }
     } catch (e) { /* not written yet */ }
     if (Date.now() - pending.start > 25 * 60000) { finishJob(false, "This is taking much longer than usual. Check back in a few minutes, or message Adam."); break; }
-    renderJobs();
   }
 }
-async function prepare(job) {
+async function ask(job, extra = {}) {
   const j = JOBS[job];
-  if (pending || !BACKEND || !j) return;
-  if (usedToday() >= DAILY_LIMIT) { lastResult[j.box] = { ok: false, text: `You've reached today's limit of ${DAILY_LIMIT} requests to Claude on this device. It resets tomorrow. If you need more today, message Adam.` }; renderJobs(); return; }
-  if (j.again && [...$("#postDay").options].some(o => o.value === today()) && !confirm(j.again)) return;
+  if (pending || !BACKEND || !j) return false;
+  if (usedToday() >= DAILY_LIMIT) { if (job === "chat") say("claude", LIMIT_TEXT, false); else { lastResult[j.box] = { ok: false, text: LIMIT_TEXT }; renderJobs(); } return false; }
+  const q = j.ask ? j.ask() : "";
+  if (q && !confirm(q)) return false;
   delete lastResult[j.box];
-  pending = { job, date: today(), start: Date.now() };
+  pending = { job, date: today(), start: Date.now(), id: extra.id || "" };
   session.set("amp.job", JSON.stringify(pending));
   renderJobs();
-  try { if (!await startJob("prepare.yml", { job, date: pending.date })) throw new Error("failed"); }
-  catch (e) { finishJob(false, "Couldn't start that. Try again in a minute, or message Adam."); return; }
+  try { if (!await startJob("prepare.yml", { job, date: pending.date, ...extra })) throw new Error("failed"); }
+  catch (e) { finishJob(false, "Couldn't start that. Try again in a minute, or message Adam."); return true; }
   store.set(usedKey(), usedToday() + 1);
   watchJob();
+  return true;
 }
-document.addEventListener("click", e => { const b = e.target.closest("[data-prepare]"); if (b) prepare(b.dataset.prepare); });
+document.addEventListener("click", e => { const b = e.target.closest("[data-prepare]"); if (b) ask(b.dataset.prepare); });
+
+/* ---------- Ask Claude ---------- */
+let CHAT = [];
+try { CHAT = JSON.parse(store.get("amp.chat") || "[]"); } catch {}
+const IDEAS = ["You forgot a story today: ", "Why isn't this post ready? ", "Change the wording on a story: ", "Add this post to today's package: "];
+function renderChat() {
+  $("#chatLog").innerHTML = CHAT.length ? CHAT.map(m => `<div class="msg ${m.who}${m.ok === false ? " bad" : ""}"><small>${m.who === "me" ? "You" : "Claude"} · ${esc(m.t)}</small>${esc(m.text)}</div>`).join("")
+    : `<div class="empty">Nothing here yet. Try one of the ideas below, or type your own.</div>`;
+  $("#chatIdeas").innerHTML = IDEAS.map(t => `<button type="button" class="chip" data-idea="${esc(t)}">${esc(t.trim().replace(/:$/, "…"))}</button>`).join("");
+  $("#chatClear").classList.toggle("hidden", !CHAT.length);
+}
+function say(who, text, ok) {
+  CHAT.push({ who, text, ok, t: new Date().toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" }) });
+  CHAT = CHAT.slice(-40);
+  store.set("amp.chat", JSON.stringify(CHAT));
+  renderChat();
+  window.scrollTo(0, document.body.scrollHeight);
+}
+$("#chatForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const text = $("#chatText").value.trim();
+  if (!text || pending || !BACKEND) return;
+  // The last few turns go along so follow-ups like "make it shorter" make sense.
+  const earlier = CHAT.slice(-6).map(m => `${m.who === "me" ? "Teammate" : "Claude"}: ${m.text}`).join("\n");
+  const message = (earlier ? `Earlier in this conversation:\n${earlier}\n\n` : "") + `New message from the teammate:\n${text}`;
+  const id = Array.from(crypto.getRandomValues(new Uint8Array(6)), b => (b % 36).toString(36)).join("");
+  say("me", text);
+  $("#chatText").value = "";
+  await ask("chat", { id, message: message.slice(0, 6000) });
+});
+$("#chatText").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#chatForm").requestSubmit(); } });
+$("#chatIdeas").addEventListener("click", e => { const b = e.target.closest("[data-idea]"); if (b) { $("#chatText").value = b.dataset.idea; $("#chatText").focus(); } });
+$("#chatClear").addEventListener("click", () => { if (confirm("Clear this conversation on this device?")) { CHAT = []; store.del("amp.chat"); renderChat(); } });
+renderChat();
 
 // A small Markdown reader for the package file: headings, lists, bold, and copy boxes for each block of copy.
 const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>")
@@ -804,7 +875,7 @@ function renderStories(md) {
   const posted = /posted/i.test(status) && !/ready/i.test(status);
   return `<div class="meta"><span class="badge ${posted ? "off" : /ready/i.test(status) ? "ok" : "wait"}">${esc((status || "In progress").replace(/^./, c => c.toUpperCase()))}</span> · ${stories.length} stor${stories.length > 1 ? "ies" : "y"}, in posting order</div>
     <div class="stories">${stories.map((s, n) => {
-      const copy = s.f["approved copy"] || s.f["draft copy"] || "", cta = s.f["approved cta"] || s.f["draft cta"] || "";
+      const copy = (s.f["approved copy"] || s.f["draft copy"] || "").replace(/\s+\/\s+/g, "\n"), cta = s.f["approved cta"] || s.f["draft cta"] || "";
       const approved = !!(s.f["approved copy"] || s.f["approved cta"]);
       const link = ((s.f.link || "").match(/https?:\/\/\S+/) || [""])[0];
       const box = (lab, text) => text ? `<div class="copybox"><div class="copyhead"><span>${lab}</span>${copyBtn(text, "Copy")}</div><pre>${esc(text)}</pre></div>` : "";
@@ -835,13 +906,13 @@ const HELP = {
     ["Prepare today's package", "Press the button. Claude reads the day's posts in Asana and builds the package. It takes a few minutes."],
     ["Download the graphic", "Each post shows its picture with a Download button."],
     ["Copy the words", "Press “Copy Facebook” or “Copy Instagram”, then paste into the post."],
-    ["Check the notes", "“Notes” explains where the copy and links came from, and anything to watch for."] ],
+    ["Mark them as posted", "Once the posts have gone out, press “Mark today's posts as posted”. That completes them in Asana."] ],
     tip: "Posts under “Not ready” are missing something, usually copy or a graphic. The note says what." },
   stories: { title: "Story Maker", lead: "The day's Instagram stories, in the order to post them.", steps: [
     ["Get them ready for Lauren", "Press the first button. Claude pulls today's stories and lists them for Lauren to approve."],
     ["Get them ready to post", "Once Lauren has approved, press the second button. Claude matches each story to its link."],
     ["Copy each piece", "Copy the words, the link for the link sticker, and the button text."],
-    ["Only post approved ones", "A green “Approved by Lauren” badge means it's good to go. Yellow means still a draft."] ],
+    ["Post, then mark as posted", "Only post stories with the green “Approved by Lauren” badge. When they're up, press “Mark today's stories as posted”."] ],
     tip: "The link goes in Instagram's link sticker. The button text is what the sticker should say." },
   links: { title: "Deep Link Finder", lead: "Get a registration link that opens the exact program.", steps: [
     ["Search for the program", "Type part of its name, a category or a date."],
@@ -849,6 +920,12 @@ const HELP = {
     ["Tick where it will be used", "Yodeck, Instagram, Facebook, LinkedIn or a flyer. Each place gets its own short link."],
     ["Press Generate, then Copy", "It takes about 20 seconds. Links that already exist show as Ready straight away."] ],
     tip: "A yellow “Opens …” badge means registration hasn't started. The link will work from that date." },
+  chat: { title: "Ask Claude", lead: "Ask for a fix the way you'd ask a teammate.", steps: [
+    ["Say what's wrong or what you need", "For example: “You forgot the Chanukah party story today” or “Change the Campaign story to say tomorrow”."],
+    ["Press Send and wait", "Claude does the work and replies. Each request takes a minute or two."],
+    ["Check the result", "Open Posting Package or Story Maker to see the change."],
+    ["Follow up if needed", "Claude remembers the last few messages, so you can say “make it shorter”."] ],
+    tip: "Claude won't post anything, message anyone or mark things as posted from here. Use the “Mark as posted” buttons for that." },
   short: { title: "Short Link Maker", lead: "Short links for any web page that isn't a registration page.", steps: [
     ["Paste the web address", "The full address, starting with https://"],
     ["Say what it's for", "A few words, like “Chanukah party tickets”. This names the short link."],
