@@ -762,7 +762,7 @@ async function loadDay(kind, day) {
     const text = await gh(repoPath(kind === "posts" ? `${d.dir}/${day}/posts.md` : `${d.dir}/${day}.md`), { raw: "text" });
     if ($(d.sel).value !== day) return;
     if (kind === "posts") { $(d.out).innerHTML = renderPackage(text, `${d.dir}/${day}`); loadMedia($(d.out)); }
-    else $(d.out).innerHTML = renderStories(text);
+    else { $(d.out).innerHTML = renderStories(text); renderJobs(); }
   } catch (e) { $(d.out).innerHTML = OFFLINE; }
 }
 
@@ -775,6 +775,8 @@ const JOBS = {
   stories_lauren: { kind: "stories", box: "#storyJob", doing: "Claude is getting today's stories ready for Lauren", usual: 180 },
   stories_posting: { kind: "stories", box: "#storyJob", doing: "Claude is getting today's stories ready to post", usual: 150 },
   stories_posted: { kind: "stories", box: "#storyJob", doing: "Claude is marking today's stories as posted in Asana", usual: 120, ask: () => "Mark today's stories as posted? " + POSTED },
+  // Sent as a chat request (no new cloud job needed); the answer shows on the Story Maker page.
+  stories_draft: { kind: "stories", box: "#storyJob", doing: "Claude is editing your draft and adding it to the message for Lauren", usual: 150, via: "chat" },
   chat: { box: "#chatJob", doing: "Claude is working on your request", usual: 120 },
 };
 let pending = null, lastResult = {};
@@ -809,9 +811,9 @@ function renderJobs() {
         You can use the other tools while you wait, but keep AMP open in this tab.
         <div class="prog" role="progressbar" aria-label="Estimated progress"><i data-jobbar style="width:${g.pct}%"></i></div>
         <div class="progline"><span data-jobstage>${g.stage}</span><span data-jobleft>${g.left}</span></div></div>`
-      : res ? `<div class="note ${res.ok ? "good" : "bad"}"><span>${esc(res.text)}</span>${res.ok && res.next ? `<div style="margin-top:8px">${res.next}</div>` : ""}</div>` : "";
+      : res ? `<div class="note ${res.ok ? "good" : "bad"}"><span style="white-space:pre-line">${esc(res.text)}</span>${res.ok && res.next ? `<div style="margin-top:8px">${res.next}</div>` : ""}</div>` : "";
   }
-  document.querySelectorAll("[data-prepare], #chatSend").forEach(b => { b.disabled = !!pending || !BACKEND; });
+  document.querySelectorAll("[data-prepare], #chatSend, [data-needs-backend]").forEach(b => { b.disabled = !!pending || !BACKEND; });
 }
 function finishJob(ok, text) {
   const job = pending.job, j = JOBS[job];
@@ -823,11 +825,12 @@ function finishJob(ok, text) {
 async function watchJob() {
   renderJobs();
   while (pending) {
-    await wait(pending.job === "chat" ? 8000 : 15000);
+    const asChat = pending.job === "chat" || JOBS[pending.job].via === "chat";
+    await wait(asChat ? 8000 : 15000);
     if (!pending) break;
     try {
-      const j = await gh(repoPath(`data/jobs/${pending.job === "chat" ? "chat-" + pending.id : pending.job}.json`), { raw: true });
-      if (pending.job === "chat" || (j.date === pending.date && Date.parse(j.finished) > pending.start - 60000)) {
+      const j = await gh(repoPath(`data/jobs/${asChat ? "chat-" + pending.id : pending.job}.json`), { raw: true });
+      if (asChat || (j.date === pending.date && Date.parse(j.finished) > pending.start - 60000)) {
         finishJob(!!j.ok, j.summary || (j.ok ? "Done." : "That didn't work. Message Adam.")); break; }
     } catch (e) { /* not written yet */ }
     if (Date.now() - pending.start > 25 * 60000) { finishJob(false, "This is taking much longer than usual. Check back in a few minutes, or message Adam."); break; }
@@ -843,13 +846,28 @@ async function ask(job, extra = {}) {
   pending = { job, date: today(), start: Date.now(), id: extra.id || "" };
   session.set("amp.job", JSON.stringify(pending));
   renderJobs();
-  try { if (!await startJob("prepare.yml", { job, date: pending.date, ...extra })) throw new Error("failed"); }
+  try { if (!await startJob("prepare.yml", { job: j.via || job, date: pending.date, ...extra })) throw new Error("failed"); }
   catch (e) { finishJob(false, "Couldn't start that. Try again in a minute, or message Adam."); return true; }
   store.set(usedKey(), usedToday() + 1);
   watchJob();
   return true;
 }
 document.addEventListener("click", e => { const b = e.target.closest("[data-prepare]"); if (b) ask(b.dataset.prepare); });
+// A story draft typed on the Story Maker page goes to Claude as a request to apply it with the stories skill.
+document.addEventListener("submit", async e => {
+  const f = e.target.closest("[data-draft]");
+  if (!f) return;
+  e.preventDefault();
+  const copy = f.copy.value.trim(), cta = f.cta.value.trim();
+  if (!copy || pending || !BACKEND) return;
+  const id = Array.from(crypto.getRandomValues(new Uint8Array(6)), b => (b % 36).toString(36)).join("");
+  const message = `STORY DRAFT from Adam on the Story Maker page (follow the "Drafts sent from the site" section of the stories skill).
+Day: ${f.dataset.day}
+Story: ${f.dataset.draft}
+Copy: ${copy}
+CTA: ${cta || "(none given)"}`;
+  await ask("stories_draft", { id, message: message.slice(0, 6000) });
+});
 
 /* ---------- Ask Claude ---------- */
 let CHAT = [];
@@ -968,10 +986,22 @@ function renderStories(md) {
     return [bold(s.name), copy, /^none\b/i.test(cta) ? "" : cta].filter(Boolean).join("\n");
   }).join("\n\n")).trim();
   const waiting = section("waiting for adam"), postNotes = section("block for lauren").replace(/```[\s\S]*?```/g, "").trim();
+  // Stories still waiting for Adam's words get a box to type the draft straight into; Claude edits it to brand and updates the message.
+  const day = ((head[0] || "").match(/\d{4}-\d{2}-\d{2}/) || [""])[0];
+  const needs = stories.filter(s => /ADAM TO (DRAFT|PASTE)/i.test((s.f["draft copy"] || "") + (s.f["draft cta"] || "")));
+  const drafts = needs.map(s => {
+    const paste = /PASTE/i.test(s.f["draft copy"] || "");
+    return `<form class="draftform" data-draft="${esc(s.name)}" data-day="${esc(day)}" style="margin-top:12px">
+      <label class="meta" style="display:block;margin-bottom:6px"><b>${esc(s.name)}</b>: ${paste ? "paste the copy it ran with before" : "your first draft"}</label>
+      <textarea class="field" name="copy" rows="2" maxlength="600" placeholder="One sentence, about 8 to 15 words" aria-label="Story copy for ${esc(s.name)}" required></textarea>
+      <input class="field" name="cta" maxlength="60" placeholder="Button text, e.g. GET TICKETS" aria-label="Button text for ${esc(s.name)}" style="margin-top:6px">
+      <button class="btn primary" style="margin-top:8px;padding:7px 14px" data-needs-backend>Send to Claude</button>
+      <span class="meta">Claude edits it to our story style, shows you what it changed and adds it to the message.</span></form>`;
+  }).join("");
   const laurenBox = `<div class="card item" style="max-width:900px"><h3>Message for Lauren</h3>
       <p class="meta">Every story for the day, approved ones too. Press Copy, then paste it to Lauren in Teams.</p>
       <div class="copybox"><div class="copyhead"><span>For Lauren</span>${copyBtn(message, "Copy all")}</div><pre>${esc(message)}</pre></div>
-      ${waiting ? `<div class="note wait">${waiting.split("\n").filter(l => l.trim()).map(l => `<p>${inline(l)}</p>`).join("")}</div>` : ""}
+      ${waiting ? `<div class="note wait">${waiting.split("\n").filter(l => l.trim()).map(l => `<p>${inline(l)}</p>`).join("")}${drafts}</div>` : drafts ? `<div class="note wait">${drafts}</div>` : ""}
       ${postNotes ? `<p class="meta">${inline(postNotes)}</p>` : ""}</div>`;
   return `<div class="meta"><span class="badge ${posted ? "off" : /ready/i.test(status) ? "ok" : "wait"}">${esc((status || "In progress").replace(/^./, c => c.toUpperCase()))}</span> · ${stories.length} stor${stories.length > 1 ? "ies" : "y"}, in posting order</div>
     ${forLauren ? laurenBox + `<details style="margin-top:16px"><summary>Each story on its own (with links)</summary>` : ""}
