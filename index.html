@@ -13,17 +13,17 @@
 <style>
   /* Colours, type and shapes follow mnjcc.org: Rubik, Community Teal, 4px corners, the rainbow strip under the header. */
   :root {
-    --bg: #f6f8f9; --card: #ffffff; --text: #282828; --muted: #5d6670; --line: #dfe5e8;
+    --bg: #f6f8f9; --card: #ffffff; --text: #282828; --muted: #4f5862; --line: #dfe5e8;
     --teal: #01a3b2; --accent: #017580; --accent-hover: #00626b; --accent-soft: #d1eef1; --accent-text: #ffffff; --chip: #eef2f4;
     --ok: #1d7a3d; --ok-soft: #e4f4e9; --bad: #b3261e; --bad-soft: #fdecea; --warn: #8a5a00; --warn-soft: #fff4dc;
     --shadow: 0 1px 2px rgba(20,40,50,.05), 0 6px 20px rgba(20,40,50,.06);
-    --purple: #9c3795; --blue: #2f6fd0; --orange: #d9730d; --green: #3a8f4a;
+    --purple: #9c3795; --blue: #2460c0; --orange: #b35a00; --green: #2a7a3a;
     --rainbow: linear-gradient(90deg, #01a3b2, #3a8f4a, #e2b100, #e8792b, #d6453d, #9c3795, #4b7bb9);
     --r: 4px; --r-lg: 10px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #10161a; --card: #182126; --text: #e9eef0; --muted: #9aa8b0; --line: #2a363d;
+      --bg: #10161a; --card: #182126; --text: #e9eef0; --muted: #b7c3ca; --line: #2a363d;
       --teal: #2bc4d2; --accent: #2bc4d2; --accent-hover: #55d3de; --accent-soft: #143a40; --accent-text: #06242a; --chip: #212c32;
       --ok: #5cc47f; --ok-soft: #1a3324; --bad: #ff7a70; --bad-soft: #3b1f1f; --warn: #f2c14e; --warn-soft: #362c14;
       --shadow: 0 1px 2px rgba(0,0,0,.3);
@@ -66,7 +66,7 @@
   .lockbox .mark .rule { height: 44px; }
   .lockbox .mark img { width: 44px; height: 44px; border-radius: 8px; }
   .lockbox h1 { font-size: 30px; font-weight: 700; letter-spacing: 2px; line-height: 1; }
-  .lockbox .sub { color: var(--muted); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
+  .lockbox .sub { color: var(--muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
   .lockbox p { margin: 0 0 16px; color: var(--muted); }
   .lockbox #pass { width: 100%; color: var(--text); padding: 12px 13px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); }
   .passrow { position: relative; }
@@ -88,7 +88,7 @@
   .word { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
   @media (max-width: 520px) { .brand small { display: none; } .brand { gap: 9px; } }
   .brand b { font-size: 21px; font-weight: 700; letter-spacing: 1.5px; }
-  .brand small { font-size: 9.5px; color: var(--muted); letter-spacing: .9px; text-transform: uppercase; margin-top: 4px; white-space: nowrap; }
+  .brand small { font-size: 10.5px; color: var(--muted); letter-spacing: .8px; text-transform: uppercase; margin-top: 4px; white-space: nowrap; }
   nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; align-self: stretch; flex: 1; }
   nav::-webkit-scrollbar { display: none; }
   nav button { background: none; border: 0; border-bottom: 3px solid transparent; border-top: 3px solid transparent; padding: 0 12px;
@@ -217,7 +217,7 @@
     box-shadow: 0 16px 50px rgba(0,0,0,.3); overflow: hidden; }
   .chathead { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; padding: 12px 14px; background: var(--accent); color: var(--accent-text); }
   .chathead b { display: block; font-size: 17px; font-weight: 600; }
-  .chathead small { display: block; opacity: .9; font-size: 13px; line-height: 1.3; }
+  .chathead small { display: block; opacity: 1; font-size: 13px; line-height: 1.3; }
   .chathead .btn { background: transparent; color: inherit; border-color: currentColor; }
   .chatbody { flex: 1; overflow-y: auto; padding: 12px; }
   #chatLog { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
@@ -402,7 +402,7 @@ const ICON = {
 };
 const svg = k => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
 const APPS = [
-  { id: "photos", name: "Photo Finder", c: "var(--teal)", text: "Search the whole photo library in plain words, like “kids swimming” or “seniors dancing”. Filter by department, year and quality." },
+  { id: "photos", name: "Photo Finder", c: "var(--accent)", text: "Search the whole photo library in plain words, like “kids swimming” or “seniors dancing”. Filter by department, year and quality." },
   { id: "posts", name: "Posting Package", c: "var(--purple)", text: "The day's social posts: each graphic with its Facebook and Instagram copy and tracking links, ready to copy." },
   { id: "stories", name: "Story Maker", c: "var(--orange)", text: "The day's Instagram stories in posting order: copy, link and button text for each one." },
   { id: "links", name: "Deep Link Finder", c: "var(--blue)", text: "Find the registration link for any program, course or session, and make a short link for each place you'll use it." },
