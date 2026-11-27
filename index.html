@@ -974,7 +974,7 @@ function renderPackage(md, dir) {
       const m = l.match(/^\*\*(.+?)\*\*:?\s*$/);
       if (m) { label = m[1]; continue; }
       const files = [...l.matchAll(/`([^`]+\.(png|jpe?g|gif|webp|mp4|mov|zip|pdf))`/gi)].map(x => x[1]);
-      html += `<p>${inline(l)}</p>`;
+      html += /^⚠️?\s*Look-alike/i.test(l) ? `<div class="note wait">${inline(l)}</div>` : `<p>${inline(l)}</p>`;
       if (files.length) html += `<div class="media">${files.map(f => `<div data-file="${esc(dir + "/" + f)}"><span class="empty">Loading ${esc(f)}…</span></div>`).join("")}</div>`;
     }
   }
@@ -1046,9 +1046,10 @@ function renderStories(md) {
       const copy = (s.f["approved copy"] || s.f["draft copy"] || "").replace(/\s+\/\s+/g, "\n"), cta = s.f["approved cta"] || s.f["draft cta"] || "";
       const link = ((s.f.link || "").match(/https?:\/\/\S+/) || [""])[0];
       const box = (lab, text) => text ? `<div class="copybox"><div class="copyhead"><span>${lab}</span>${copyBtn(text, "Copy")}</div><pre>${esc(text)}</pre></div>` : "";
-      const extra = Object.entries(s.f).filter(([k]) => !/copy|cta|^link$/.test(k));
+      const extra = Object.entries(s.f).filter(([k]) => !/copy|cta|^link$|^look-alike$/.test(k));
       return `<div class="card item"><h3>${n + 1}. ${esc(s.name)}</h3>
         ${toggle(s)}
+        ${s.f["look-alike"] ? `<div class="note wait">⚠️ Look-alike: ${inline(s.f["look-alike"])}</div>` : ""}
         ${box("Copy", copy)}${box("Link", link)}${box("Button text", cta)}
         ${!link ? `<div class="note info">${esc(s.f.link || "No link for this story.")}</div>` : ""}
         ${extra.length ? `<details><summary>More details</summary><dl class="kv">${extra.map(([k, v]) => `<dt>${esc(k[0].toUpperCase() + k.slice(1))}</dt><dd>${inline(v)}</dd>`).join("")}</dl></details>` : ""}</div>`;
