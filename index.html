@@ -162,11 +162,13 @@
   .daybar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
   .daybar select { padding: 9px 12px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); min-width: 220px; }
   .jobbox { max-width: 900px; }
-  .jobbox .note { margin: 0 0 14px; display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+  .jobbox .note { margin: 0 0 14px; font-size: 15px; }
   .jobbox .note.good { background: var(--ok-soft); color: var(--ok); }
-  .spin { flex: none; width: 18px; height: 18px; margin-top: 2px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: spin 1s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+  .prog { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+  .prog i { display: block; height: 100%; width: 3%; border-radius: 99px; background: var(--accent); transition: width 1s linear; }
+  .prog.auto i { animation: fill 26s cubic-bezier(.15,.6,.3,1) forwards; transition: none; }
+  @keyframes fill { from { width: 3%; } to { width: 95%; } }
+  .progline { display: flex; justify-content: space-between; gap: 12px; margin-top: 6px; font-size: 14px; }
   .doc { max-width: 900px; }
   .doc, .jobbox, #storyDoc { overflow-wrap: anywhere; }
   .doc > p, .doc > ul { margin: 8px 0; }
@@ -181,6 +183,8 @@
   .copyhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 8px 7px 12px; background: var(--chip); font-weight: 500; font-size: 14px; }
   .copybox pre { margin: 0; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 15px; background: var(--card); }
   .media { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; margin: 10px 0; }
+  .media > div { max-width: 100%; }
+  .media .btn { white-space: normal; text-align: left; max-width: 100%; overflow-wrap: anywhere; }
   .media img { max-width: 240px; max-height: 300px; border-radius: var(--r); border: 1px solid var(--line); background: var(--chip); }
   details { margin-top: 8px; }
   details summary { cursor: pointer; color: var(--accent); font-size: 14px; font-weight: 500; }
@@ -486,7 +490,7 @@ function makeShortBox(root, target) {
     go.textContent = busy ? "Making your links…" : !rows.length ? "Tick at least one place" : !s ? "Add a short link name"
       : todo.length ? `Generate ${todo.length} short link${todo.length > 1 ? "s" : ""}` : "All short links are ready";
     go.disabled = busy || !rows.length || !s || !todo.length || !BACKEND;
-    root.querySelector("[data-note]").innerHTML = busy ? `<div class="note info">This takes about 20 seconds. Stay on this page.</div>`
+    root.querySelector("[data-note]").innerHTML = busy ? `<div class="note info">Making your links. This takes about 20 seconds; stay on this page.<div class="prog auto" role="progressbar" aria-label="Estimated progress"><i></i></div></div>`
       : failed ? `<div class="note bad">That didn't work. Try again in a minute, or message Adam.</div>`
       : clash ? `<div class="note bad">A short link with this name already points somewhere else. Change the short link name.</div>` : "";
   }
@@ -662,13 +666,32 @@ let pending = null, lastResult = {};
 const DAILY_LIMIT = 50, usedKey = () => "amp.used." + today();
 const usedToday = () => +(store.get(usedKey()) || 0);
 try { pending = JSON.parse(session.get("amp.job") || "null"); } catch {}
+// There is no live signal from Claude while it works, so the bar is an estimate from the usual time for each job.
+const TYPICAL = { posts: 240, stories_lauren: 180, stories_posting: 150 };
+const STAGES = [[0, "Starting up"], [12, "Reading today's tasks in Asana"], [40, "Putting the copy, graphics and links together"], [80, "Checking and saving"]];
+function jobProgress() {
+  const secs = (Date.now() - pending.start) / 1000, usual = TYPICAL[pending.job] || 200;
+  const pct = Math.min(96, 100 * (1 - Math.exp(-2.3 * secs / usual)));
+  const stage = STAGES.filter(x => pct >= x[0]).pop()[1];
+  const left = Math.ceil((usual - secs) / 60);
+  return { pct, stage, left: secs > usual ? "Taking a little longer than usual. Still working." : left <= 1 ? "Less than a minute left" : `About ${left} minutes left` };
+}
+function tickJob() {
+  if (!pending) return;
+  const g = jobProgress();
+  document.querySelectorAll("[data-jobbar]").forEach(b => { b.style.width = g.pct + "%"; });
+  document.querySelectorAll("[data-jobstage]").forEach(b => { b.textContent = g.stage; });
+  document.querySelectorAll("[data-jobleft]").forEach(b => { b.textContent = g.left; });
+}
+setInterval(tickJob, 1000);
 function renderJobs() {
   for (const box of ["#postJob", "#storyJob"]) {
     const mine = pending && JOBS[pending.job].box === box, res = lastResult[box];
-    const mins = pending ? Math.floor((Date.now() - pending.start) / 60000) : 0;
-    $(box).innerHTML = mine ? `<div class="note info"><span class="spin"></span><span><b>Claude is preparing ${JOBS[pending.job].what}.</b>
-        Started ${mins < 1 ? "just now" : mins + " minute" + (mins > 1 ? "s" : "") + " ago"}. This usually takes 3 to 8 minutes.
-        You can use the other tools while you wait, but keep AMP open in this tab.</span></div>`
+    const g = mine ? jobProgress() : null;
+    $(box).innerHTML = mine ? `<div class="note info"><b>Claude is preparing ${JOBS[pending.job].what}.</b>
+        You can use the other tools while you wait, but keep AMP open in this tab.
+        <div class="prog" role="progressbar" aria-label="Estimated progress"><i data-jobbar style="width:${g.pct}%"></i></div>
+        <div class="progline"><span data-jobstage>${g.stage}</span><span data-jobleft>${g.left}</span></div></div>`
       : res ? `<div class="note ${res.ok ? "good" : "bad"}"><span>${esc(res.text)}</span></div>` : "";
   }
   document.querySelectorAll("[data-prepare]").forEach(b => { b.disabled = !!pending || !BACKEND; });
