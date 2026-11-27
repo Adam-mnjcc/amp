@@ -139,7 +139,7 @@
 
   /* link tools (Deep Link Finder + Short Link Maker) */
   .dl { display: grid; grid-template-columns: minmax(0, 1fr) 410px; gap: 18px; align-items: start; }
-  @media (max-width: 980px) { .dl { grid-template-columns: 1fr; } }
+  @media (max-width: 980px) { .dl { grid-template-columns: minmax(0, 1fr); } }
   .field { width: 100%; padding: 11px 14px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 0 4px; }
   .chip { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 14px; white-space: nowrap; }
@@ -701,9 +701,12 @@ function resolve(k) {
   return { k, level: "Option", name: o.n, q: o.q, ctx: `${s.n} · ${p.n}`, sessions: [s], base: c.n };
 }
 let deepBox = { render() {} };
+const SALESFORCE = "https://mnjcc.lightning.force.com/lightning/r/";
 function renderPanel() {
   if (!sel) return;
   const url = LINKS.portal + sel.q;
+  // The record's own ID is the last value in the portal link (the option's ID when an option is picked).
+  const sfUrl = SALESFORCE + sel.q.split("=").pop() + "/view";
   const waits = (sel.sessions || []).map(windowOf).filter(w => w.k !== "ok");
   const allWait = sel.sessions && waits.length === sel.sessions.length;
   $("#panel").innerHTML = `
@@ -711,7 +714,11 @@ function renderPanel() {
     <div class="url"><input readonly value="${esc(url)}" aria-label="Registration link">${copyBtn(url)}
       <a class="btn small" href="${esc(url)}" target="_blank" rel="noopener">Open</a></div>
     ${allWait ? `<div class="note wait">${waits[0].k === "wait" ? `Registration o${waits[0].text.slice(1)}. Until then this link lands on the portal's general browse page.` : `${waits[0].text}. This link no longer opens the session.`}</div>` : ""}
-    <div id="deepShort"></div>`;
+    <div id="deepShort"></div>
+    <details class="sfref"><summary>Salesforce record (for reference)</summary>
+      <p class="meta">Opens this ${sel.level.toLowerCase()} in Salesforce, for checking details. Staff sign-in only: never use it in marketing.</p>
+      <div class="url"><input readonly value="${esc(sfUrl)}" aria-label="Salesforce record link">${copyBtn(sfUrl)}
+        <a class="btn small" href="${esc(sfUrl)}" target="_blank" rel="noopener">Open</a></div></details>`;
   const mine = sel;
   deepBox = makeShortBox($("#deepShort"), () => ({ url: LINKS.portal + mine.q, title: (mine.level === "Option" ? mine.base : mine.name).replace(season, "") }));
   deepBox.render();
@@ -988,6 +995,7 @@ const HELP = {
   links: { title: "Deep Link Finder", lead: "Get a registration link that opens the exact program.", steps: [
     ["Search for the program", "Type part of its name, a category or a date."],
     ["Press the link you want", "Session link is usually right: it opens one class or series. Program link opens the whole program page; Option link opens one date."],
+    ["Need to check it in Salesforce?", "Under the link, “Salesforce record (for reference)” opens the same program, course, session or option in Salesforce. It's only for checking details: never put it in marketing."],
     ["Pick the formats", "Tap each format it's for: Instagram, Facebook, Yodeck, a flyer and so on. Each one gets its own short link. Use Other for anything not listed."],
     ["Press Generate, then Copy", "It takes about 20 seconds. Links that already exist show as Ready straight away."] ],
     tip: "A yellow “Opens …” badge means registration hasn't started. The link will work from that date." },
