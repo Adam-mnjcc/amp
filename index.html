@@ -109,6 +109,10 @@
   .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); }
   .note { border-radius: var(--r); padding: 9px 12px; font-size: 14px; margin-top: 10px; }
   .note.wait { background: var(--warn-soft); color: var(--warn); }
+  .approve { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; font-weight: 500; }
+  .approve input { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+  .approve input:checked + span { color: var(--ok); }
+  .approverow { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); }
   .note.info { background: var(--chip); color: var(--muted); }
   .note.bad { background: var(--bad-soft); color: var(--bad); }
   .badge { font-size: 12px; font-weight: 500; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
@@ -853,6 +857,29 @@ async function ask(job, extra = {}) {
   return true;
 }
 document.addEventListener("click", e => { const b = e.target.closest("[data-prepare]"); if (b) ask(b.dataset.prepare); });
+// The approval switches write the story's "Lauren:" line into stories/daily/<day>.md, then reload the day.
+async function setApproval(day, name, on) {
+  const path = `stories/daily/${day}.md`, f = await gh(repoPath(path)), NL = "\n";
+  const md = new TextDecoder().decode(Uint8Array.from(atob(f.content.replace(/\s/g, "")), c => c.charCodeAt(0))).replace(/\r/g, "");
+  const head = NL + "## " + name + NL, at = md.indexOf(head);
+  if (at < 0) throw new Error("story not found");
+  const start = at + head.length, next = md.indexOf(NL + "## ", start), end = next < 0 ? md.length : next;
+  const line = `- Lauren: ${on ? "approved" : "not approved"} (switched on AMP)`;
+  let body = md.slice(start, end);
+  body = /^- Lauren:.*$/m.test(body) ? body.replace(/^- Lauren:.*$/m, line) : line + NL + body;
+  const bytes = new TextEncoder().encode(md.slice(0, start) + body + md.slice(end));
+  let bin = ""; bytes.forEach(b => { bin += String.fromCharCode(b); });
+  await gh("/contents/" + path.split("/").map(encodeURIComponent).join("/"), { method: "PUT",
+    body: { message: `Story Maker: ${name} ${on ? "approved" : "not approved"} by Lauren (${day})`, content: btoa(bin), sha: f.sha, branch: "main" } });
+}
+document.addEventListener("change", async e => {
+  const box = e.target.closest("[data-approve]");
+  if (!box) return;
+  const on = box.checked, label = box.nextElementSibling;
+  box.disabled = true; label.textContent = "Saving…";
+  try { await setApproval(box.dataset.day, box.dataset.approve, on); loadDay("stories", box.dataset.day); }
+  catch (err) { box.checked = !on; box.disabled = false; label.textContent = "Couldn't save. Try again, or message Adam."; }
+});
 // A story draft typed on the Story Maker page goes to Claude as a request to apply it with the stories skill.
 document.addEventListener("submit", async e => {
   const f = e.target.closest("[data-draft]");
@@ -998,21 +1025,30 @@ function renderStories(md) {
       <button class="btn primary" style="margin-top:8px;padding:7px 14px" data-needs-backend>Send to Claude</button>
       <span class="meta">Claude edits it to our story style, shows you what it changed and adds it to the message.</span></form>`;
   }).join("");
+  // Lauren's approval: stories count as approved once they're sent to her (Adam 2026-11-27). The "Lauren:" line in the
+  // day's file says so; the switches below change it. Older files without that line go by "Approved copy".
+  const needsDraft = s => /ADAM TO (DRAFT|PASTE)/i.test((s.f["draft copy"] || "") + (s.f["draft cta"] || ""));
+  const isApproved = s => !needsDraft(s) && (s.f.lauren ? /^approved/i.test(s.f.lauren) : !!(s.f["approved copy"] || s.f["approved cta"]));
+  const toggle = s => needsDraft(s) ? `<span class="badge wait">Waiting for Adam's draft</span>`
+    : `<label class="approve"><input type="checkbox" data-approve="${esc(s.name)}" data-day="${esc(day)}"${isApproved(s) ? " checked" : ""} data-needs-backend>
+        <span>${isApproved(s) ? "Approved by Lauren" : "Not approved yet"}</span></label>`;
+  const approvals = `<div style="margin-top:14px"><b>Lauren's approval</b>
+      <p class="meta" style="margin:4px 0 8px">Stories count as approved once they're ready for Lauren. Untick any she changes or turns down; tick it again once it's sorted.</p>
+      ${stories.map(s => `<div class="approverow"><span>${esc(s.name)}</span>${toggle(s)}</div>`).join("")}</div>`;
   const laurenBox = `<div class="card item" style="max-width:900px"><h3>Message for Lauren</h3>
       <p class="meta">Every story for the day, approved ones too. Press Copy, then paste it to Lauren in Teams.</p>
       <div class="copybox"><div class="copyhead"><span>For Lauren</span>${copyBtn(message, "Copy all")}</div><pre>${esc(message)}</pre></div>
       ${waiting ? `<div class="note wait">${waiting.split("\n").filter(l => l.trim()).map(l => `<p>${inline(l)}</p>`).join("")}${drafts}</div>` : drafts ? `<div class="note wait">${drafts}</div>` : ""}
-      ${postNotes ? `<p class="meta">${inline(postNotes)}</p>` : ""}</div>`;
+      ${postNotes ? `<p class="meta">${inline(postNotes)}</p>` : ""}${approvals}</div>`;
   return `<div class="meta"><span class="badge ${posted ? "off" : /ready/i.test(status) ? "ok" : "wait"}">${esc((status || "In progress").replace(/^./, c => c.toUpperCase()))}</span> · ${stories.length} stor${stories.length > 1 ? "ies" : "y"}, in posting order</div>
     ${forLauren ? laurenBox + `<details style="margin-top:16px"><summary>Each story on its own (with links)</summary>` : ""}
     <div class="stories">${stories.map((s, n) => {
       const copy = (s.f["approved copy"] || s.f["draft copy"] || "").replace(/\s+\/\s+/g, "\n"), cta = s.f["approved cta"] || s.f["draft cta"] || "";
-      const approved = !!(s.f["approved copy"] || s.f["approved cta"]);
       const link = ((s.f.link || "").match(/https?:\/\/\S+/) || [""])[0];
       const box = (lab, text) => text ? `<div class="copybox"><div class="copyhead"><span>${lab}</span>${copyBtn(text, "Copy")}</div><pre>${esc(text)}</pre></div>` : "";
       const extra = Object.entries(s.f).filter(([k]) => !/copy|cta|^link$/.test(k));
       return `<div class="card item"><h3>${n + 1}. ${esc(s.name)}</h3>
-        <span class="badge ${approved ? "ok" : "wait"}">${approved ? "Approved by Lauren" : "Draft, not approved yet"}</span>
+        ${toggle(s)}
         ${box("Copy", copy)}${box("Link", link)}${box("Button text", cta)}
         ${!link ? `<div class="note info">${esc(s.f.link || "No link for this story.")}</div>` : ""}
         ${extra.length ? `<details><summary>More details</summary><dl class="kv">${extra.map(([k, v]) => `<dt>${esc(k[0].toUpperCase() + k.slice(1))}</dt><dd>${inline(v)}</dd>`).join("")}</dl></details>` : ""}</div>`;
@@ -1043,7 +1079,7 @@ const HELP = {
     ["Get them ready for Lauren", "Press the first button. Claude pulls today's stories into one message for Lauren: press “Copy all” and paste it to her in Teams."],
     ["Get them ready to post", "Once Lauren has approved, press the second button. Claude matches each story to its link."],
     ["Copy each piece", "Copy the words, the link for the link sticker, and the button text."],
-    ["Post, then mark as posted", "Only post stories with the green “Approved by Lauren” badge. When they're up, press “Mark today's stories as posted”."] ],
+    ["Post, then mark as posted", "Stories count as approved by Lauren once they're ready for her. If she changes or turns one down, untick its “Approved by Lauren” box; only ticked stories get posted. When they're up, press “Mark today's stories as posted”."] ],
     tip: "The link goes in Instagram's link sticker. The button text is what the sticker should say." },
   links: { title: "Deep Link Finder", lead: "Get a registration link that opens the exact program.", steps: [
     ["Search for the program", "Type part of its name, a category or a date."],
