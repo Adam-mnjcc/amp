@@ -52,6 +52,7 @@
   .btn:disabled { opacity: .5; cursor: not-allowed; }
   .eyebrow { display: flex; align-items: center; gap: 12px; color: var(--accent); font-size: 13px; font-weight: 500;
     letter-spacing: 2px; text-transform: uppercase; }
+  .asis { text-transform: none; }   /* MNjcc is never written in all caps */
   .eyebrow::before, .eyebrow.both::after { content: ""; width: 28px; height: 1px; background: currentColor; opacity: .6; }
 
   /* passcode screen */
@@ -61,10 +62,11 @@
     box-shadow: var(--shadow); overflow: hidden; }
   .lockbox .strip { height: 5px; background: var(--rainbow); }
   .lockbox .in { padding: 28px 26px 26px; }
-  .lockbox .mark { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .lockbox .mark { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .lockbox .mark .rule { height: 44px; }
   .lockbox .mark img { width: 44px; height: 44px; border-radius: 8px; }
-  .lockbox h1 { font-size: 30px; font-weight: 600; letter-spacing: .5px; }
-  .lockbox .sub { color: var(--muted); font-size: 14px; }
+  .lockbox h1 { font-size: 30px; font-weight: 700; letter-spacing: 2px; line-height: 1; }
+  .lockbox .sub { color: var(--muted); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
   .lockbox p { margin: 0 0 16px; color: var(--muted); }
   .lockbox #pass { width: 100%; color: var(--text); padding: 12px 13px; border-radius: var(--r); border: 1px solid var(--line); background: var(--bg); }
   .passrow { position: relative; }
@@ -80,10 +82,13 @@
   header { position: sticky; top: 0; z-index: 5; background: var(--card); }
   header::after { content: ""; display: block; height: 4px; background: var(--rainbow); }
   .bar { max-width: 1400px; margin: 0 auto; padding: 0 16px; display: flex; gap: 18px; align-items: center; min-height: 56px; }
-  .brand { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; cursor: pointer; }
-  .jmark { width: 30px; height: 30px; border-radius: 6px; align-self: center; }
-  .brand b { font-size: 21px; font-weight: 600; letter-spacing: .5px; }
-  .brand small { font-size: 12px; color: var(--muted); line-height: 1.15; text-align: left; }
+  .brand { display: flex; align-items: center; gap: 12px; background: none; border: 0; padding: 0; cursor: pointer; }
+  .brand img { width: 32px; height: 32px; border-radius: 7px; }
+  .rule { width: 1px; height: 30px; background: var(--line); }
+  .word { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+  @media (max-width: 520px) { .brand small { display: none; } .brand { gap: 9px; } }
+  .brand b { font-size: 21px; font-weight: 700; letter-spacing: 1.5px; }
+  .brand small { font-size: 9.5px; color: var(--muted); letter-spacing: .9px; text-transform: uppercase; margin-top: 4px; white-space: nowrap; }
   nav { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; align-self: stretch; flex: 1; }
   nav::-webkit-scrollbar { display: none; }
   nav button { background: none; border: 0; border-bottom: 3px solid transparent; border-top: 3px solid transparent; padding: 0 12px;
@@ -91,7 +96,7 @@
   nav button:hover { color: var(--accent); }
   nav button.on { color: var(--accent); border-bottom-color: var(--teal); }
   .tools { display: flex; gap: 8px; align-items: center; }
-  @media (max-width: 1180px) { .brand small { display: none; } .bar { gap: 10px; flex-wrap: wrap; padding-top: 8px; }
+  @media (max-width: 1180px) { .bar { gap: 10px; flex-wrap: wrap; padding-top: 8px; }
     nav { order: 3; flex-basis: 100%; min-height: 42px; margin: 0 -16px; padding: 0 8px; } .tools { margin-left: auto; } }
 
   main { max-width: 1400px; margin: 0 auto; padding: 22px 16px 70px; }
@@ -120,7 +125,9 @@
   .hero h1 span, .a { color: #01a3b2; }
   .hero .tag { font-size: 20px; margin: 6px 0 12px; }
   .hero p { color: var(--muted); max-width: 640px; margin: 0 auto; }
-  .apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1100px; margin: 0 auto; }
+  @media (max-width: 860px) { .apps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .apps { grid-template-columns: 1fr; } }
   .app { display: flex; flex-direction: column; gap: 8px; padding: 20px; text-align: left; cursor: pointer; border-top: 4px solid var(--c, var(--teal));
     transition: transform .15s, box-shadow .15s; font: inherit; color: inherit; }
   .app:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(20,40,50,.06), 0 12px 28px rgba(20,40,50,.1); }
@@ -248,7 +255,7 @@
   <form class="lockbox" id="lockForm">
     <div class="strip"></div>
     <div class="in">
-      <div class="mark"><div><h1><span class="a">A</span>MP</h1><div class="sub">Automated Marketing Platform</div></div><img data-logo alt="Miles Nadal JCC"></div>
+      <div class="mark"><img data-logo alt="Miles Nadal JCC"><i class="rule"></i><div><h1><span class="a">A</span>MP</h1><div class="sub">Automated Marketing Platform</div></div></div>
       <p>The MNjcc marketing team's tools in one place. Enter the team passcode to continue.</p>
       <div class="passrow"><input type="password" id="pass" placeholder="Team passcode" autocomplete="current-password" autofocus>
         <button type="button" id="showPass" aria-pressed="false" aria-controls="pass">Show</button></div>
@@ -262,7 +269,7 @@
 <div id="app" class="hidden">
 <header>
   <div class="bar">
-    <button class="brand" data-tab="home" title="Home"><b><span class="a">A</span>MP</b><small>Automated<br>Marketing Platform</small></button>
+    <button class="brand" data-tab="home" title="Home"><img data-logo alt="Miles Nadal JCC"><i class="rule"></i><span class="word"><b><span class="a">A</span>MP</b><small>Automated Marketing Platform</small></span></button>
     <nav id="tabs">
       <button data-tab="home">Home</button>
       <button data-tab="photos">Photo Finder</button>
@@ -272,7 +279,6 @@
       <button data-tab="short">Short Link Maker</button>
     </nav>
     <div class="tools">
-      <img class="jmark" data-logo alt="Miles Nadal JCC" title="Miles Nadal JCC">
       <button class="btn small" id="helpBtn">? Help</button>
       <button class="btn small" id="lockBtn" title="Forget the passcode on this device">Lock</button>
     </div>
@@ -282,7 +288,7 @@
 <main>
   <section id="tab-home" class="hidden">
     <div class="hero">
-      <div class="eyebrow both">MNjcc Marketing</div>
+      <div class="eyebrow both"><span><span class="asis">MNjcc</span> Marketing</span></div>
       <h1><span>A</span>MP</h1>
       <div class="tag">Automated Marketing Platform</div>
       <p>Everything the marketing team reaches for every day, in one place: find the right photo, grab today's posts and stories, and get
