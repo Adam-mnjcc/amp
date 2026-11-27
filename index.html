@@ -896,8 +896,14 @@ $("#chatClear").addEventListener("click", () => { if (confirm("Clear this conver
 renderChat();
 
 // A small Markdown reader for the package file: headings, lists, bold, and copy boxes for each block of copy.
-const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>")
-  .replace(/(https?:\/\/[^\s<)]+[^\s<).,;:])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+// [name](https://…) becomes a link called "name"; a bare https://… address becomes a link to itself.
+const inline = s => {
+  const named = [];
+  const t = esc(s).replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (m, txt, url) => `\u0000${named.push([txt, url]) - 1}\u0000`)
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/(https?:\/\/[^\s<)\u0000]+[^\s<).,;:\u0000])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  return t.replace(/\u0000(\d+)\u0000/g, (m, i) => `<a href="${named[i][1]}" target="_blank" rel="noopener">${named[i][0]}</a>`);
+};
 function renderPackage(md, dir) {
   const lines = md.replace(/\r/g, "").split("\n");
   let html = "", inItem = false, list = false, label = "";
